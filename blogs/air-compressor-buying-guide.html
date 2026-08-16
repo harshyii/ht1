@@ -60,24 +60,35 @@
 </head>
 <body>
 
-<!-- Full-width black header background -->
-<header class="bg-dark text-white sticky-top shadow-sm w-100">
-  <!-- Centered container for content alignment -->
-  <div class="container d-flex justify-content-between align-items-center py-3">
-    <a href="/" class="navbar-brand fw-bold text-warning fs-3 mb-0">Haryana Tools</a>
-    <nav class="d-flex align-items-center gap-3">
-      <a href="/" class="text-white text-decoration-none">Home</a>
-      <a href="/catalog.html" class="text-warning text-decoration-none">Catalog</a>
-      <a href="/cart.html" class="btn btn-warning text-dark fw-bold px-3 py-1 shadow-sm d-flex align-items-center gap-1">
-        🛒 Cart
+<!-- 1. HEADER MUST BE AT THE TOP LEVEL (OUTSIDE MAIN CONTAINER) -->
+<header class="w-full bg-gray-900 sticky top-0 z-50 shadow-md">
+  <!-- 2. CONTAINER INSIDE HEADER CENTERS CONTENT WHILE KEEPING HEADER FULL-WIDTH -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+    
+    <!-- Brand Logo / Name -->
+    <a href="/" class="text-xl font-extrabold text-amber-500 hover:text-amber-400 transition">
+      Haryana Tools
+    </a>
+
+    <!-- Navigation Links -->
+    <nav class="flex items-center gap-6">
+      <a href="/" class="text-gray-300 hover:text-white font-medium text-sm transition">
+        Home
+      </a>
+      <a href="/catalog.html" class="text-amber-500 hover:text-amber-400 font-medium text-sm transition">
+        Catalog
+      </a>
+      <a href="/cart.html" class="inline-flex items-center gap-1.5 px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold text-sm rounded-lg shadow transition">
+        <span>🛒</span> Cart
       </a>
     </nav>
+
   </div>
 </header>
 
 
 
-  <main class="container my-5 overflow-hidden">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <nav aria-label="breadcrumb" class="mb-4">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
