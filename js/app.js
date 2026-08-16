@@ -88,7 +88,7 @@ const App = {
       <div id="top-announcement-bar"></div>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm" aria-label="Main navigation">
         <div class="container">
-          <a class="navbar-brand fw-bold text-uppercase tracking-wide" href="/public/index.html" aria-label="JK Enterprises Home">
+          <a class="navbar-brand fw-bold text-uppercase tracking-wide" href="/index.html" aria-label="JK Enterprises Home">
             <span class="text-warning">JK</span> Enterprises
           </a>
 
@@ -104,11 +104,11 @@ const App = {
             </form>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-              <li class="nav-item"><a class="nav-link" href="/public/index.html">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
               <li class="nav-item"><a class="nav-link" href="/catalog.html">Catalog</a></li>
               <li class="nav-item"><a class="nav-link" href="/blogs.html">Blogs</a></li>
               <li class="nav-item">
-                <a class="nav-link btn btn-outline-warning ms-lg-2 px-3 position-relative text-white" href="/public/cart.html" aria-label="Shopping cart">
+                <a class="nav-link btn btn-outline-warning ms-lg-2 px-3 position-relative text-white" href="/cart.html" aria-label="Shopping cart">
                   🛒 Cart
                   <span class="cart-count-badge badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
                 </a>
@@ -151,10 +151,10 @@ const App = {
             <div class="col-md-4">
               <h6 class="fw-bold mb-3">Quick Links</h6>
               <ul class="list-unstyled small mb-0 space-y-1">
-                <li><a href="/public/index.html" class="text-light-emphasis text-decoration-none">Home</a></li>
+                <li><a href="/index.html" class="text-light-emphasis text-decoration-none">Home</a></li>
                 <li><a href="/catalog.html" class="text-light-emphasis text-decoration-none">Browse Catalog</a></li>
                 <li><a href="/blogs.html" class="text-light-emphasis text-decoration-none">Knowledge Hub / Blogs</a></li>
-                <li><a href="/public/cart.html" class="text-light-emphasis text-decoration-none">Shopping Cart</a></li>
+                <li><a href="/cart.html" class="text-light-emphasis text-decoration-none">Shopping Cart</a></li>
               </ul>
             </div>
             <div class="col-md-4">
@@ -194,7 +194,7 @@ const App = {
 
       const blogCardsHtml = latestBlogs.map(blog => {
         const imageUrl = blog.featuredImage || blog.thumbnail || 'https://via.placeholder.com/600x400?text=No+Image';
-        const staticBlogUrl = `/public/blogs/${encodeURIComponent(blog.slug || blog.id)}.html`;
+        const staticBlogUrl = `/blogs/${encodeURIComponent(blog.slug || blog.id)}.html`;
 
         return `
           <div class="col-md-4">

@@ -64,7 +64,7 @@ async function loadBlogGrid(page = 1) {
     let gridContentHtml = '';
     paginatedBlogs.forEach((blog, index) => {
       const imageUrl = blog.featuredImage || blog.thumbnail || 'https://via.placeholder.com/600x400?text=No+Image';
-      const blogUrl = `/public/blogs/${encodeURIComponent(blog.slug || blog.id)}.html`;
+      const blogUrl = `/blogs/${encodeURIComponent(blog.slug || blog.id)}.html`;
 
       gridContentHtml += `
         <article class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full">
