@@ -1,0 +1,21 @@
+/* Fix Footer Text Contrast */
+#main-footer {
+  background-color: #212529;
+  color: #e0e0e0 !important; /* Forces light text */
+}
+
+#main-footer p, 
+#main-footer span, 
+#main-footer div {
+  color: #cccccc !important;
+}
+
+#main-footer a {
+  color: #9ec5fe !important; /* Soft light blue for links */
+  text-decoration: none;
+}
+
+#main-footer a:hover {
+  color: #ffffff !important;
+  text-decoration: underline;
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "productId": "JKE-SKU-IIYDCTCNGIYDSMKF",
+    "id": "rev-101",
+    "userName": "Ramesh Kumar",
+    "rating": 5,
+    "date": "2026-03-15",
+    "title": "Excellent Quality Screwdriver Set",
+    "comment": "The handles offer a really good grip, and the Chrome Vanadium steel feels solid. Worth every rupee."
+  },
+  {
+    "productId": "JKE-SKU-IIYDCTCNGIYDSMKF",
+    "id": "rev-102",
+    "userName": "Ankit Sharma",
+    "rating": 4,
+    "date": "2026-02-28",
+    "title": "Good for daily work",
+    "comment": "Good quality overall. The magnet tips could be slightly stronger, but excellent value."
+  }
+]

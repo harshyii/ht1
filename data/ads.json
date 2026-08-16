@@ -1,0 +1,51 @@
+{
+  "topBanner": {
+    "id": "banner-001",
+    "title": "PM Surya Ghar Rooftop Solar Scheme",
+    "subtitle": "Get up to ₹78,000 Govt Subsidy on On-Grid Solar Installation",
+    "ctaText": "Apply Now",
+    "targetUrl": "/public/catalog.html?category=solar",
+    "active": true
+  },
+  "sidebarBanners": [
+    {
+      "id": "sb-001",
+      "placement": "catalog_sidebar",
+      "title": "Eastman Heavy Duty Hand Tools",
+      "image": "/images/ads/eastman-tools-banner.jpg",
+      "alt": "Eastman Hand Tools Wholesale",
+      "targetUrl": "/public/catalog.html?brand=Eastman",
+      "active": true
+    },
+    {
+      "id": "sb-002",
+      "placement": "blog_sidebar",
+      "title": "Solar Cabling & Accessories",
+      "image": "/images/ads/solar-cabling.jpg",
+      "alt": "DC Solar Cables",
+      "targetUrl": "/public/catalog.html?category=solar-cables",
+      "active": true
+    }
+  ],
+  "sponsoredProducts": [
+    {
+      "id": "sp-001",
+      "asin": "B08X12345",
+      "title": "Eastman 46-Piece Combination Tool Kit",
+      "brand": "Eastman",
+      "badge": "Sponsored",
+      "currentPrice": 1499,
+      "originalPrice": 2200,
+      "thumbnail": "/images/products/eastman-kit.jpg",
+      "targetUrl": "/public/catalog.html?search=eastman+46+piece",
+      "active": true
+    }
+  ],
+  "cartCrossSell": {
+    "id": "cs-001",
+    "title": "Recommended Solar Cable Wire Clips & Tools",
+    "discountCode": "BUNDLE10",
+    "targetUrl": "/public/catalog.html?category=solar-tools",
+    "active": true
+  }
+}

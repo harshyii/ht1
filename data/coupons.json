@@ -1,0 +1,35 @@
+[
+  {
+    "code": "SUMMER20",
+    "discount_type": "percentage",
+    "discount_value": 20,
+    "target_type": "brand",
+    "target_value": "Eastman, JRSDrive",
+    "min_purchase": 0,
+    "max_discount": 50,
+    "expiryDate": "2026-08-30",
+    "status": "active"
+  },
+  {
+    "code": "FLAT50",
+    "discount_type": "fixed",
+    "discount_value": 50,
+    "target_type": "all",
+    "target_value": "*",
+    "min_purchase": 200,
+    "max_discount": 50,
+    "expiryDate": "2026-12-30",
+    "status": "active"
+  },
+  {
+    "code": "SHOE10",
+    "discount_type": "percentage",
+    "discount_value": 10,
+    "target_type": "category",
+    "target_value": "Foxcare",
+    "min_purchase": 30,
+    "max_discount": 20,
+    "expiryDate": "2026-09-14",
+    "status": "active"
+  }
+]

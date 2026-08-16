@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Black+Decker",
+    "slug": "black-decker",
+    "url": "/public/catalog.html?brand=Black%2BDecker",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/61hTurjP3kL.jpg",
+    "productCount": 71
+  },
+  {
+    "name": "Bosch",
+    "slug": "bosch",
+    "url": "/public/catalog.html?brand=Bosch",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/71+-N6rxdnL.jpg",
+    "productCount": 174
+  },
+  {
+    "name": "Bosch Professional",
+    "slug": "bosch-professional",
+    "url": "/public/catalog.html?brand=Bosch%20Professional",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/510fQMBzVoL.jpg",
+    "productCount": 6
+  },
+  {
+    "name": "Buildskill",
+    "slug": "buildskill",
+    "url": "/public/catalog.html?brand=Buildskill",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/81lfBOISK-L.jpg",
+    "productCount": 4
+  },
+  {
+    "name": "Calandis",
+    "slug": "calandis",
+    "url": "/public/catalog.html?brand=Calandis",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/51lGNG6j0pL.jpg",
+    "productCount": 4
+  },
+  {
+    "name": "Eastman",
+    "slug": "eastman",
+    "url": "/public/catalog.html?brand=Eastman",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/71AaIvAYz3L.jpg",
+    "productCount": 206
+  },
+  {
+    "name": "Eastman Energy",
+    "slug": "eastman-energy",
+    "url": "/public/catalog.html?brand=Eastman%20Energy",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/41uLs9EcHZL.jpg",
+    "productCount": 65
+  },
+  {
+    "name": "Freemans",
+    "slug": "freemans",
+    "url": "/public/catalog.html?brand=Freemans",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/61NCLTuzL+L.jpg",
+    "productCount": 77
+  },
+  {
+    "name": "Generic",
+    "slug": "generic",
+    "url": "/public/catalog.html?brand=Generic",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/615KiBdXb4L.jpg",
+    "productCount": 24
+  },
+  {
+    "name": "Ibell",
+    "slug": "ibell",
+    "url": "/public/catalog.html?brand=Ibell",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/71BwsWfLsgL.jpg",
+    "productCount": 28
+  },
+  {
+    "name": "Inditrust",
+    "slug": "inditrust",
+    "url": "/public/catalog.html?brand=Inditrust",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/41IE0n7l9wL.jpg",
+    "productCount": 25
+  },
+  {
+    "name": "Ingco",
+    "slug": "ingco",
+    "url": "/public/catalog.html?brand=Ingco",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/61hXLhdSmlL.jpg",
+    "productCount": 110
+  },
+  {
+    "name": "Inicio",
+    "slug": "inicio",
+    "url": "/public/catalog.html?brand=Inicio",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/51nXiSObFiL.jpg",
+    "productCount": 8
+  },
+  {
+    "name": "Irwin",
+    "slug": "irwin",
+    "url": "/public/catalog.html?brand=Irwin",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/4115JiWACVL.jpg",
+    "productCount": 3
+  },
+  {
+    "name": "Other",
+    "slug": "other",
+    "url": "/public/catalog.html?brand=Other",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/71Gs8ZpPzxL.jpg",
+    "productCount": 3
+  },
+  {
+    "name": "Saxton Blades",
+    "slug": "saxton-blades",
+    "url": "/public/catalog.html?brand=Saxton%20Blades",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/71Ql8+LGOUL.jpg",
+    "productCount": 8
+  },
+  {
+    "name": "Stanley",
+    "slug": "stanley",
+    "url": "/public/catalog.html?brand=Stanley",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/81VTh7ELc1L.jpg",
+    "productCount": 71
+  },
+  {
+    "name": "Taparia",
+    "slug": "taparia",
+    "url": "/public/catalog.html?brand=Taparia",
+    "icon": "fa-solid fa-award",
+    "image": "https://m.media-amazon.com/images/I/61GxKAP4UfL.jpg",
+    "productCount": 304
+  }
+]

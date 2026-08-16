@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs & Articles - JK Enterprises</title>
+  
+  <!-- Dynamic Head Component Injection -->
+  <div id="head-component"></div>
+
+  <!-- CSS Frameworks & Assets -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Dynamic Header Partial Placeholder -->
+  <header id="main-header"></header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header Banner -->
+    <div class="mb-10 text-center max-w-2xl mx-auto">
+      <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Resources & Insights</span>
+      <h1 class="text-4xl font-extrabold text-gray-900 mt-3 tracking-tight">JK Knowledge Hub</h1>
+      <p class="text-gray-600 text-sm mt-2">Expert guides, tool maintenance tips, and industry trends to help you work smarter.</p>
+    </div>
+
+    <!-- Blog Grid -->
+    <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Loading Skeleton -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 animate-pulse">
+        <div class="w-full h-48 bg-gray-200 rounded-xl mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+        <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div class="h-4 bg-gray-200 rounded w-full"></div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 animate-pulse hidden md:block">
+        <div class="w-full h-48 bg-gray-200 rounded-xl mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+        <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div class="h-4 bg-gray-200 rounded w-full"></div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 animate-pulse hidden lg:block">
+        <div class="w-full h-48 bg-gray-200 rounded-xl mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+        <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div class="h-4 bg-gray-200 rounded w-full"></div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls Container -->
+    <div id="pagination-container"></div>
+  </main>
+
+  <!-- Dynamic Footer Partial Placeholder -->
+  <footer id="main-footer"></footer>
+
+  <!-- Component Loader & Blog Scripts -->
+  <script src="./js/app.js"></script>
+  <script src="./js/blog-renderer.js"></script>
+  <script src="./js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

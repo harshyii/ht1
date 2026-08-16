@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation - JK Enterprises</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Header -->
+  <header class="bg-gray-900 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <a href="/public/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
+      <nav class="flex gap-6 items-center">
+        <a href="/public/index.html" class="hover:text-yellow-400 font-medium text-sm transition">Home</a>
+        <a href="/public/catalog.html" class="hover:text-yellow-400 font-medium text-sm transition">Catalog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <!-- Success Banner -->
+    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-sm text-center mb-8">
+      <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+        ✓
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Order Placed Successfully!</h1>
+      <p class="text-sm text-gray-500 mt-2 max-w-lg mx-auto">
+        Thank you for your order. We have received your payment details and are verifying your payment.
+      </p>
+      
+      <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl text-xs font-bold mt-4 border border-blue-100">
+        <span>Order ID:</span>
+        <span id="display-order-id" class="font-mono text-sm">--</span>
+      </div>
+    </div>
+
+    <!-- Receipt Card -->
+    <div id="order-details-card" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8 hidden">
+      <div class="bg-gray-900 text-white p-4 px-6 flex justify-between items-center text-xs">
+        <span class="font-semibold text-gray-300">Order Summary</span>
+        <span id="display-order-date" class="text-gray-400">--</span>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <!-- Two Column Layout: Customer Details & Payment Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-gray-100">
+          <div>
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Shipping Address</h3>
+            <p id="cust-name-display" class="font-bold text-gray-900 text-sm">--</p>
+            <p id="cust-address-display" class="text-xs text-gray-600 leading-relaxed mt-1">--</p>
+            <p id="cust-contact-display" class="text-xs text-gray-500 mt-2">--</p>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Payment Details</h3>
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-500">Method:</span>
+                <span id="pay-method-display" class="font-semibold text-gray-900">UPI QR Code</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">UTR / Ref No:</span>
+                <span id="pay-utr-display" class="font-mono font-bold text-blue-600">--</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Status:</span>
+                <span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-[10px]">Verification Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ordered Items Table -->
+        <div>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Items Ordered</h3>
+          <div id="ordered-items-list" class="space-y-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="pt-4 border-t border-gray-100 text-sm space-y-1.5 max-w-xs ml-auto">
+          <div class="flex justify-between text-gray-600">
+            <span>Subtotal</span>
+            <span id="receipt-subtotal" class="font-semibold text-gray-900">₹0</span>
+          </div>
+          <div id="receipt-discount-row" class="flex justify-between text-green-600 hidden">
+            <span>Discount</span>
+            <span id="receipt-discount" class="font-bold">-₹0</span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>Shipping</span>
+            <span class="text-green-600 font-bold">FREE</span>
+          </div>
+          <div class="flex justify-between text-base font-extrabold text-gray-900 pt-2 border-t border-gray-100">
+            <span>Total Paid</span>
+            <span id="receipt-total" class="text-xl text-blue-600">₹0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button onclick="window.print()" class="bg-gray-100 text-gray-800 font-bold px-6 py-3 rounded-xl hover:bg-gray-200 transition text-sm flex items-center justify-center gap-2">
+        🖨️ Print Receipt
+      </button>
+      <a href="/public/catalog.html" class="bg-blue-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition text-sm flex items-center justify-center gap-2 text-center shadow-md">
+        Continue Shopping →
+      </a>
+    </div>
+
+  </main>
+
+  <footer id="main-footer"></footer>
+
+  <script src="./js/components.js"></script>
+  <script src="./js/checkout-success.js"></script>
+</body>
+</html>

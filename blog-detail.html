@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article - Haryana Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col font-sans">
+
+  <!-- Navigation Bar -->
+  <header class="bg-gray-900 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <a href="/public/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">Haryana Tools</a>
+      <nav class="flex gap-6 items-center">
+        <a href="/public/index.html" class="hover:text-yellow-400 font-medium text-sm transition">Home</a>
+        <a href="/public/catalog.html" class="hover:text-yellow-400 font-medium text-sm transition">Catalog</a>
+        <a href="/public/blogs.html" class="text-yellow-400 font-bold text-sm transition">Blogs</a>
+        <a href="/public/cart.html" class="bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg font-bold hover:bg-yellow-400 text-sm transition shadow">
+          🛒 Cart
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <a href="/public/blogs.html" class="inline-flex items-center text-xs font-bold text-blue-600 hover:text-blue-800 mb-6 transition">
+      ← Back to all blogs
+    </a>
+
+    <!-- Container where full blog content gets injected -->
+    <article id="article-container" class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-10 shadow-sm">
+      <div class="animate-pulse space-y-4">
+        <div class="h-8 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-64 bg-gray-200 rounded-xl"></div>
+        <div class="h-4 bg-gray-200 rounded w-full"></div>
+      </div>
+    </article>
+  </main>
+    <!-- Dynamic Footer Injection -->
+  <footer id="main-footer"></footer>
+
+  <script src="./js/blog-renderer.js"></script>
+</body>
+</html>
