@@ -186,11 +186,15 @@ function generateUpiQrCode() {
 async function placeOrder() {
   const name = document.getElementById('cust-name')?.value.trim();
   const phone = document.getElementById('cust-phone')?.value.trim();
+  const email = document.getElementById('cust-email')?.value.trim();
   const address = document.getElementById('cust-address')?.value.trim();
+  const city = document.getElementById('cust-city')?.value.trim();
+  const state = document.getElementById('cust-state')?.value.trim();
+  const pincode = document.getElementById('cust-pincode')?.value.trim();
   const paymentRef = document.getElementById('payment-ref')?.value.trim();
 
-  // 1. Validate mandatory address fields
-  if (!name || !phone || !address) {
+  // 1. Mandatory Address Validation
+  if (!name || !phone || !address || !city || !state || !pincode) {
     alert('Please fill in all mandatory shipping address fields (*).');
     return;
   }
@@ -203,26 +207,62 @@ async function placeOrder() {
     }
   }
 
+  // 3. Generate Order ID & Capture Order Object
+  const generatedOrderId = `JK-${Math.floor(100000 + Math.random() * 900000)}`;
+  const orderTimestamp = new Date().toISOString();
   const { subtotal, discount, codSurcharge, totalPayable } = calculateCartTotals();
-  
+
+  const orderRecord = {
+    orderId: generatedOrderId,
+    orderDate: orderTimestamp,
+    customer: {
+      name,
+      phone,
+      email,
+      address,
+      city,
+      state,
+      pincode
+    },
+    payment: {
+      method: selectedPaymentMethod,
+      utrReference: selectedPaymentMethod === 'upi' ? paymentRef : 'Pay on Delivery (COD)'
+    },
+    items: currentCart,
+    pricing: {
+      subtotal,
+      discount,
+      codSurcharge,
+      totalPayable
+    }
+  };
+
+  // 4. Store Order Data for Success / Receipt Page
+  try {
+    localStorage.setItem('jk_last_order', JSON.stringify(orderRecord));
+  } catch (e) {
+    console.error('Failed to save order record:', e);
+  }
+
+  // 5. Build WhatsApp Message Payload
   const itemsText = currentCart.map((item, index) => {
     const qty = Number(item.quantity) || 0;
     const price = Number(item.price) || 0;
     return `${index + 1}. *${item.title}*\n   Qty: ${qty} | Price: ₹${(price * qty).toLocaleString('en-IN')}`;
   }).join('\n');
 
-  // 3. Prepare payload details according to selected payment method
   const paymentText = selectedPaymentMethod === 'cod'
     ? `💵 *Payment Method:* Pay on Delivery (COD)\n➕ *COD Surcharge (5%):* ₹${codSurcharge.toLocaleString('en-IN')}`
     : `💵 *Payment Method:* Prepaid (UPI)\n💳 *UPI UTR / Ref No:* ${paymentRef}`;
 
   const orderMessage = 
 `🛒 *NEW ORDER RECEIVED - HARYANA TOOLS*
+🆔 *Order ID:* ${generatedOrderId}
 ----------------------------------------
 *Customer Details:*
 👤 *Name:* ${name}
 📞 *Phone:* ${phone}
-📍 *Address:* ${address}
+📍 *Address:* ${address}, ${city}, ${state} - ${pincode}
 
 *Ordered Items:*
 ${itemsText}
@@ -235,14 +275,14 @@ ${paymentText}
 ----------------------------------------
 _Please confirm my order placement!_`;
 
-  // 4. Open WhatsApp
+  // 6. Launch WhatsApp
   const encodedMsg = encodeURIComponent(orderMessage);
   const whatsappUrl = `https://wa.me/${BUSINESS_PHONE}?text=${encodedMsg}`;
   window.open(whatsappUrl, '_blank');
 
-  // 5. Empty Cart
+  // 7. Clear Shopping Cart
   localStorage.removeItem(CART_STORAGE_KEY);
 
-  // 6. Redirect to Success
-  window.location.href = './checkout-success.html';
+  // 8. Redirect with Order ID query param
+  window.location.href = `./checkout-success.html?orderId=${generatedOrderId}`;
 }
