@@ -185,7 +185,7 @@ async function renderEmptyCartWithFeatured(container) {
       <div class="text-5xl mb-3">🛒</div>
       <h3 class="text-xl font-bold text-gray-800 mb-1">Your cart is empty</h3>
       <p class="text-sm text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
-      <a href="/public/catalog.html" class="inline-block bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow-md">
+      <a href="/catalog.html" class="inline-block bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow-md">
         Explore Catalog
       </a>
     </div>

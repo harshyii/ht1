@@ -4,7 +4,7 @@
     "title": "PM Surya Ghar Rooftop Solar Scheme",
     "subtitle": "Get up to ₹78,000 Govt Subsidy on On-Grid Solar Installation",
     "ctaText": "Apply Now",
-    "targetUrl": "/public/catalog.html?category=solar",
+    "targetUrl": "/catalog.html?category=solar",
     "active": true
   },
   "sidebarBanners": [
@@ -14,7 +14,7 @@
       "title": "Eastman Heavy Duty Hand Tools",
       "image": "/images/ads/eastman-tools-banner.jpg",
       "alt": "Eastman Hand Tools Wholesale",
-      "targetUrl": "/public/catalog.html?brand=Eastman",
+      "targetUrl": "/catalog.html?brand=Eastman",
       "active": true
     },
     {
@@ -23,7 +23,7 @@
       "title": "Solar Cabling & Accessories",
       "image": "/images/ads/solar-cabling.jpg",
       "alt": "DC Solar Cables",
-      "targetUrl": "/public/catalog.html?category=solar-cables",
+      "targetUrl": "/catalog.html?category=solar-cables",
       "active": true
     }
   ],
@@ -37,7 +37,7 @@
       "currentPrice": 1499,
       "originalPrice": 2200,
       "thumbnail": "/images/products/eastman-kit.jpg",
-      "targetUrl": "/public/catalog.html?search=eastman+46+piece",
+      "targetUrl": "/catalog.html?search=eastman+46+piece",
       "active": true
     }
   ],
@@ -45,7 +45,7 @@
     "id": "cs-001",
     "title": "Recommended Solar Cable Wire Clips & Tools",
     "discountCode": "BUNDLE10",
-    "targetUrl": "/public/catalog.html?category=solar-tools",
+    "targetUrl": "/catalog.html?category=solar-tools",
     "active": true
   }
 }

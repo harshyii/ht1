@@ -16,7 +16,7 @@ function getQueryParams() {
  */
 const Navigation = {
   toCatalogByBrand: (brandName) => {
-    return `/public/catalog.html?brand=${encodeURIComponent(brandName)}`;
+    return `/catalog.html?brand=${encodeURIComponent(brandName)}`;
   },
   toCatalogByCategory: (categoryName) => {
     return `/public/ catalog.html?category=${encodeURIComponent(categoryName)}`;

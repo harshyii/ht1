@@ -105,8 +105,8 @@ const App = {
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
               <li class="nav-item"><a class="nav-link" href="/public/index.html">Home</a></li>
-              <li class="nav-item"><a class="nav-link" href="/public/catalog.html">Catalog</a></li>
-              <li class="nav-item"><a class="nav-link" href="/public/blogs.html">Blogs</a></li>
+              <li class="nav-item"><a class="nav-link" href="/catalog.html">Catalog</a></li>
+              <li class="nav-item"><a class="nav-link" href="/blogs.html">Blogs</a></li>
               <li class="nav-item">
                 <a class="nav-link btn btn-outline-warning ms-lg-2 px-3 position-relative text-white" href="/public/cart.html" aria-label="Shopping cart">
                   🛒 Cart
@@ -152,8 +152,8 @@ const App = {
               <h6 class="fw-bold mb-3">Quick Links</h6>
               <ul class="list-unstyled small mb-0 space-y-1">
                 <li><a href="/public/index.html" class="text-light-emphasis text-decoration-none">Home</a></li>
-                <li><a href="/public/catalog.html" class="text-light-emphasis text-decoration-none">Browse Catalog</a></li>
-                <li><a href="/public/blogs.html" class="text-light-emphasis text-decoration-none">Knowledge Hub / Blogs</a></li>
+                <li><a href="/catalog.html" class="text-light-emphasis text-decoration-none">Browse Catalog</a></li>
+                <li><a href="/blogs.html" class="text-light-emphasis text-decoration-none">Knowledge Hub / Blogs</a></li>
                 <li><a href="/public/cart.html" class="text-light-emphasis text-decoration-none">Shopping Cart</a></li>
               </ul>
             </div>
@@ -231,7 +231,7 @@ const App = {
                 <span class="text-uppercase text-primary fw-bold small tracking-wider">Resources & Guides</span>
                 <h2 class="fw-bold text-dark m-0">Latest Knowledge & Insights</h2>
               </div>
-              <a href="/public/blogs.html" class="btn btn-outline-primary btn-sm fw-bold">View All Articles →</a>
+              <a href="/blogs.html" class="btn btn-outline-primary btn-sm fw-bold">View All Articles →</a>
             </div>
             <div class="row g-4">
               ${blogCardsHtml}
@@ -336,7 +336,7 @@ addToCart(product, quantity = 1) {
     const input = document.getElementById('global-search-input');
     const query = input ? input.value.trim() : '';
     if (query) {
-      window.location.href = `/public/catalog.html?search=${encodeURIComponent(query)}`;
+      window.location.href = `/catalog.html?search=${encodeURIComponent(query)}`;
     }
   },
 
