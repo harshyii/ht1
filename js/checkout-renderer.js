@@ -60,7 +60,7 @@ function calculateCartTotals() {
   const discount = Math.min(appliedDiscountAmount, subtotal);
   const netSubtotal = Math.max(0, subtotal - discount);
 
-  // Apply 5% surcharge if COD is selected
+  // Apply 5% surcharge ONLY if COD is selected
   const codSurcharge = (selectedPaymentMethod === 'cod') ? Math.round(netSubtotal * COD_SURCHARGE_RATE) : 0;
   const totalPayable = netSubtotal + codSurcharge;
 
@@ -79,10 +79,10 @@ function setupPaymentMethodListeners() {
 
       if (selectedPaymentMethod === 'cod') {
         if (utrContainer) utrContainer.classList.add('hidden');
-        if (qrBox) qrBox.classList.add('opacity-50', 'pointer-events-none');
+        if (qrBox) qrBox.classList.add('opacity-40', 'pointer-events-none');
       } else {
         if (utrContainer) utrContainer.classList.remove('hidden');
-        if (qrBox) qrBox.classList.remove('opacity-50', 'pointer-events-none');
+        if (qrBox) qrBox.classList.remove('opacity-40', 'pointer-events-none');
         generateUpiQrCode();
       }
 
@@ -189,16 +189,18 @@ async function placeOrder() {
   const address = document.getElementById('cust-address')?.value.trim();
   const paymentRef = document.getElementById('payment-ref')?.value.trim();
 
-  // Validate Mandatory Fields
+  // 1. Validate mandatory address fields
   if (!name || !phone || !address) {
     alert('Please fill in all mandatory shipping address fields (*).');
     return;
   }
 
-  // Validate UTR only if UPI is selected
-  if (selectedPaymentMethod === 'upi' && (!paymentRef || paymentRef.length < 6)) {
-    alert('Please enter a valid UPI Reference / Transaction UTR Number.');
-    return;
+  // 2. Validate UTR strictly IF UPI is selected
+  if (selectedPaymentMethod === 'upi') {
+    if (!paymentRef || paymentRef.length < 6) {
+      alert('Please enter a valid UPI Reference / Transaction UTR Number.');
+      return;
+    }
   }
 
   const { subtotal, discount, codSurcharge, totalPayable } = calculateCartTotals();
@@ -209,6 +211,7 @@ async function placeOrder() {
     return `${index + 1}. *${item.title}*\n   Qty: ${qty} | Price: ₹${(price * qty).toLocaleString('en-IN')}`;
   }).join('\n');
 
+  // 3. Prepare payload details according to selected payment method
   const paymentText = selectedPaymentMethod === 'cod'
     ? `💵 *Payment Method:* Pay on Delivery (COD)\n➕ *COD Surcharge (5%):* ₹${codSurcharge.toLocaleString('en-IN')}`
     : `💵 *Payment Method:* Prepaid (UPI)\n💳 *UPI UTR / Ref No:* ${paymentRef}`;
@@ -232,14 +235,14 @@ ${paymentText}
 ----------------------------------------
 _Please confirm my order placement!_`;
 
-  // 1. Send WhatsApp Message
+  // 4. Open WhatsApp
   const encodedMsg = encodeURIComponent(orderMessage);
   const whatsappUrl = `https://wa.me/${BUSINESS_PHONE}?text=${encodedMsg}`;
   window.open(whatsappUrl, '_blank');
 
-  // 2. Clear Local Storage Cart
+  // 5. Empty Cart
   localStorage.removeItem(CART_STORAGE_KEY);
 
-  // 3. Redirect Main Window to Success Page
+  // 6. Redirect to Success
   window.location.href = './checkout-success.html';
 }
