@@ -265,13 +265,14 @@ async function applyCouponCode() {
   }
 }
 
-// Order Submission Handler Placeholder
+// Order Submission Handler
 async function placeOrder() {
   const name = document.getElementById('cust-name')?.value.trim();
   const phone = document.getElementById('cust-phone')?.value.trim();
   const address = document.getElementById('cust-address')?.value.trim();
   const paymentRef = document.getElementById('payment-ref')?.value.trim();
 
+  // 1. Validate Form Inputs
   if (!name || !phone || !address) {
     alert('Please fill in all mandatory shipping address fields (*).');
     return;
@@ -282,5 +283,43 @@ async function placeOrder() {
     return;
   }
 
-  console.log('Form validated. Ready to send order data.');
+  // 2. Format Items List for WhatsApp
+  const { subtotal, discount, totalPayable } = calculateCartTotals();
+  
+  const itemsText = currentCart.map((item, index) => {
+    const qty = Number(item.quantity) || 0;
+    const price = Number(item.price) || 0;
+    return `${index + 1}. *${item.title}*\n   Qty: ${qty} | Price: ₹${(price * qty).toLocaleString('en-IN')}`;
+  }).join('\n');
+
+  // 3. Construct WhatsApp Message
+  const orderMessage = 
+`🛒 *NEW ORDER RECEIVED - HARYANA TOOLS*
+----------------------------------------
+*Customer Details:*
+👤 *Name:* ${name}
+📞 *Phone:* ${phone}
+📍 *Address:* ${address}
+
+*Ordered Items:*
+${itemsText}
+
+----------------------------------------
+💵 *Subtotal:* ₹${subtotal.toLocaleString('en-IN')}
+🏷️ *Discount:* -₹${discount.toLocaleString('en-IN')}
+💰 *Total Paid:* ₹${totalPayable.toLocaleString('en-IN')}
+💳 *UPI UTR / Ref No:* ${paymentRef}
+----------------------------------------
+_Please confirm my order placement!_`;
+
+  // 4. Open WhatsApp in a new tab
+  const encodedMsg = encodeURIComponent(orderMessage);
+  const whatsappUrl = `https://wa.me/${BUSINESS_PHONE}?text=${encodedMsg}`;
+  window.open(whatsappUrl, '_blank');
+
+  // 5. Clear Cart from Local Storage
+  localStorage.removeItem(CART_STORAGE_KEY);
+
+  // 6. Redirect main browser window to success page
+  window.location.href = './checkout-success.html';
 }
