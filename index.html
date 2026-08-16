@@ -12,11 +12,39 @@
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <!-- Added crossorigin="anonymous" to fix tracking/CDN console warnings -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="/css/output.css" rel="stylesheet">
+
+<!-- Combined Google Tag Manager & Google Analytics (GA4) Script -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D1H4T5X8FT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D1H4T5X8FT');
+
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3640702266093626"
+     crossorigin="anonymous"></script></head>
 <body class="bg-light">
 
   <!-- Dynamic Header Injection -->
-  <header id="main-header"></header>
+  <header class="bg-gray-900 text-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+    <a href="index.html" class="text-2xl font-black text-yellow-400 tracking-tight">Haryana Tools</a>
+    <nav class="flex gap-6 items-center">
+      <a href="index.html" class="hover:text-yellow-400 font-medium text-sm transition">Home</a>
+      <a href="catalog.html" class="hover:text-yellow-400 font-medium text-sm transition">Catalog</a>
+      <a href="blogs.html" class="hover:text-yellow-400 font-medium text-sm transition">Blogs</a>
+      <a href="cart.html" class="bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg font-bold hover:bg-yellow-400 text-sm transition shadow flex items-center gap-1.5">
+        🛒 Cart <span id="cart-badge-count" class="bg-gray-900 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+      </a>
+    </nav>
+  </div>
+</header>
 
   <!-- Hero Section -->
   <section class="bg-primary text-white py-5 shadow-sm">
@@ -54,7 +82,52 @@
   <section id="home-blogs-section"></section>
 
   <!-- Dynamic Footer Injection -->
-  <footer id="main-footer"></footer>
+  <footer class="bg-gray-900 text-gray-400 mt-20 border-t border-gray-800 text-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+    
+    <!-- Brand Info -->
+    <div class="space-y-3">
+      <a href="/public/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
+      <p class="text-xs text-gray-400 leading-relaxed">
+        Your trusted partner for industrial tools, power machinery, and on-grid solar power systems in Pehowa and beyond.
+      </p>
+    </div>
+
+    <!-- Quick Links -->
+    <div>
+      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Quick Links</h3>
+      <ul class="space-y-2 text-xs">
+        <li><a href="/public/index.html" class="hover:text-yellow-400 transition">Home</a></li>
+        <li><a href="/public/catalog.html" class="hover:text-yellow-400 transition">Product Catalog</a></li>
+        <li><a href="/public/blogs.html" class="hover:text-yellow-400 transition">Knowledge Hub / Blogs</a></li>
+        <li><a href="/public/cart.html" class="hover:text-yellow-400 transition">Cart & Checkout</a></li>
+      </ul>
+    </div>
+
+    <!-- Categories -->
+    <div>
+      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Solutions</h3>
+      <ul class="space-y-2 text-xs">
+        <li><a href="/public/catalog.html?cat=powertools" class="hover:text-yellow-400 transition">Power Tools</a></li>
+        <li><a href="/public/catalog.html?cat=solar" class="hover:text-yellow-400 transition">On-Grid Solar Systems</a></li>
+        <li><a href="/public/catalog.html?cat=handtools" class="hover:text-yellow-400 transition">Hand Tools & Equipment</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Info -->
+    <div>
+      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Contact Us</h3>
+      <p class="text-xs text-gray-400 mb-1">📍 Pehowa, Haryana, India</p>
+      <p class="text-xs text-gray-400 mb-1">📞 Sales & Support: +91 9050623210</p>
+      <p class="text-xs text-gray-400">✉️ support@haryana.tools</p>
+    </div>
+
+  </div>
+
+  <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
+    © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
+  </div>
+</footer>
 
   <!-- Core Scripts -->
   <script src="./js/app.js"></script>
