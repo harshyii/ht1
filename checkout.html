@@ -26,13 +26,13 @@
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-8 border-b border-gray-200 pb-4">
       <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Checkout</h1>
-      <p class="text-sm text-gray-500 mt-1">Complete your shipping details and scan the UPI QR code to finalize your order.</p>
+      <p class="text-sm text-gray-500 mt-1">Complete your shipping details and select your payment method to finalize your order.</p>
     </div>
 
     <!-- Main Checkout Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-      <!-- Left Column: Shipping Form & Payment Confirmation (7 Cols) -->
+      <!-- Left Column: Shipping Form & Payment Method (7 Cols) -->
       <div class="lg:col-span-7 space-y-6">
         
         <!-- Shipping Details Card -->
@@ -80,26 +80,45 @@
           </form>
         </div>
 
-        <!-- Payment Verification Box -->
-        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-          <h2 class="text-lg font-bold text-gray-900 mb-2 pb-2 border-b border-gray-100 flex items-center gap-2">
-            ✅ Payment Verification
+        <!-- Payment Method Selection Box -->
+        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-5">
+          <h2 class="text-lg font-bold text-gray-900 pb-2 border-b border-gray-100 flex items-center gap-2">
+            💳 Select Payment Method
           </h2>
-          <p class="text-xs text-gray-500 mb-4">After scanning the QR code and completing payment in GPay/PhonePe/Paytm, enter your UPI Reference / Transaction ID below.</p>
 
-          <div>
-            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">UPI Transaction / UTR Ref No. *</label>
-            <input type="text" id="payment-ref" placeholder="e.g. 423456789012" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:border-blue-600 transition mb-4">
-            
-            <button onclick="placeOrder()" class="w-full bg-green-600 text-white font-bold py-3.5 rounded-xl hover:bg-green-700 active:scale-98 transition shadow-lg shadow-green-200 text-sm">
-              Confirm & Place Order
-            </button>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-yellow-400 transition bg-white">
+              <input type="radio" name="payment_method" value="upi" checked class="w-4 h-4 text-yellow-500 focus:ring-yellow-400">
+              <div>
+                <p class="text-sm font-bold text-gray-900">UPI / Instant Online Payment</p>
+                <p class="text-xs text-gray-500">Scan QR or pay via GPay, PhonePe, Paytm, or BHIM</p>
+              </div>
+            </label>
+
+            <label class="flex items-center gap-3 p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-yellow-400 transition bg-white">
+              <input type="radio" name="payment_method" value="cod" class="w-4 h-4 text-yellow-500 focus:ring-yellow-400">
+              <div>
+                <p class="text-sm font-bold text-gray-900">Pay on Delivery (COD)</p>
+                <p class="text-xs text-amber-600 font-semibold">+5% handling surcharge applies</p>
+              </div>
+            </label>
           </div>
+
+          <!-- UTR / Ref ID Input (Shown when UPI is selected) -->
+          <div id="utr-field-container">
+            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">UPI Transaction / UTR Ref No. *</label>
+            <input type="text" id="payment-ref" placeholder="e.g. 423456789012" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:border-blue-600 transition">
+            <p class="text-[11px] text-gray-400 mt-1">Enter the 12-digit UPI transaction reference number after making payment.</p>
+          </div>
+
+          <button onclick="placeOrder()" class="w-full bg-green-600 text-white font-bold py-3.5 rounded-xl hover:bg-green-700 active:scale-98 transition shadow-lg shadow-green-200 text-sm">
+            Confirm & Place Order
+          </button>
         </div>
 
       </div>
 
-      <!-- Right Column: Coupon, QR Code & Order Summary (5 Cols) -->
+      <!-- Right Column: Promo, QR Code & Order Summary (5 Cols) -->
       <div class="lg:col-span-5 space-y-6">
 
         <!-- Coupon Code Box -->
@@ -150,7 +169,7 @@
         <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
           <h3 class="text-sm font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100">Order Items</h3>
           <div id="checkout-items-list" class="space-y-3 max-h-60 overflow-y-auto pr-1">
-            <!-- Dynamically populated -->
+            <!-- Dynamically populated via JS -->
           </div>
 
           <div class="pt-4 border-t border-gray-100 mt-4 text-sm space-y-1.5">
@@ -162,6 +181,11 @@
             <div id="discount-row" class="flex justify-between text-green-600 hidden">
               <span>Coupon Discount</span>
               <span id="checkout-discount" class="font-bold">-₹0</span>
+            </div>
+
+            <div id="cod-surcharge-row" class="flex justify-between text-amber-700 font-semibold hidden">
+              <span>COD Surcharge (5%)</span>
+              <span id="checkout-cod-surcharge">+₹0</span>
             </div>
 
             <div class="flex justify-between text-gray-600">
@@ -181,53 +205,53 @@
     </div>
   </main>
 
-    <!-- Dynamic Footer Injection -->
+  <!-- Footer -->
   <footer class="bg-gray-900 text-gray-400 mt-20 border-t border-gray-800 text-sm">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
-    
-    <!-- Brand Info -->
-    <div class="space-y-3">
-      <a href="/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
-      <p class="text-xs text-gray-400 leading-relaxed">
-        Your trusted partner for industrial tools, power machinery, and on-grid solar power systems in Pehowa and beyond.
-      </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Brand Info -->
+      <div class="space-y-3">
+        <a href="/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
+        <p class="text-xs text-gray-400 leading-relaxed">
+          Your trusted partner for industrial tools, power machinery, and on-grid solar power systems in Pehowa and beyond.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Quick Links</h3>
+        <ul class="space-y-2 text-xs">
+          <li><a href="/index.html" class="hover:text-yellow-400 transition">Home</a></li>
+          <li><a href="/catalog.html" class="hover:text-yellow-400 transition">Product Catalog</a></li>
+          <li><a href="/blogs.html" class="hover:text-yellow-400 transition">Knowledge Hub / Blogs</a></li>
+          <li><a href="/cart.html" class="hover:text-yellow-400 transition">Cart & Checkout</a></li>
+        </ul>
+      </div>
+
+      <!-- Categories -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Solutions</h3>
+        <ul class="space-y-2 text-xs">
+          <li><a href="/catalog.html?cat=powertools" class="hover:text-yellow-400 transition">Power Tools</a></li>
+          <li><a href="/catalog.html?cat=solar" class="hover:text-yellow-400 transition">On-Grid Solar Systems</a></li>
+          <li><a href="/catalog.html?cat=handtools" class="hover:text-yellow-400 transition">Hand Tools & Equipment</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Contact Us</h3>
+        <p class="text-xs text-gray-400 mb-1">📍 Pehowa, Haryana, India</p>
+        <p class="text-xs text-gray-400 mb-1">📞 Sales & Support: +91 9050623210</p>
+        <p class="text-xs text-gray-400">✉️ support@haryana.tools</p>
+      </div>
+
     </div>
 
-    <!-- Quick Links -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Quick Links</h3>
-      <ul class="space-y-2 text-xs">
-        <li><a href="/index.html" class="hover:text-yellow-400 transition">Home</a></li>
-        <li><a href="/catalog.html" class="hover:text-yellow-400 transition">Product Catalog</a></li>
-        <li><a href="/blogs.html" class="hover:text-yellow-400 transition">Knowledge Hub / Blogs</a></li>
-        <li><a href="/cart.html" class="hover:text-yellow-400 transition">Cart & Checkout</a></li>
-      </ul>
+    <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
+      © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
     </div>
-
-    <!-- Categories -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Solutions</h3>
-      <ul class="space-y-2 text-xs">
-        <li><a href="/catalog.html?cat=powertools" class="hover:text-yellow-400 transition">Power Tools</a></li>
-        <li><a href="/catalog.html?cat=solar" class="hover:text-yellow-400 transition">On-Grid Solar Systems</a></li>
-        <li><a href="/catalog.html?cat=handtools" class="hover:text-yellow-400 transition">Hand Tools & Equipment</a></li>
-      </ul>
-    </div>
-
-    <!-- Contact Info -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Contact Us</h3>
-      <p class="text-xs text-gray-400 mb-1">📍 Pehowa, Haryana, India</p>
-      <p class="text-xs text-gray-400 mb-1">📞 Sales & Support: +91 9050623210</p>
-      <p class="text-xs text-gray-400">✉️ support@haryana.tools</p>
-    </div>
-
-  </div>
-
-  <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
-    © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
-  </div>
-</footer>
+  </footer>
 
   <!-- External/Local Libraries -->
   <script src="./js/qrcode.min.js"></script>

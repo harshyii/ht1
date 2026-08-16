@@ -8,10 +8,12 @@ const UPI_CONFIG = {
 };
 
 const BUSINESS_PHONE = '919050623210'; // WhatsApp recipient (+91)
+const COD_SURCHARGE_RATE = 0.05;      // 5% COD Surcharge
 
 // State Variables
 let currentCart = [];
 let appliedDiscountAmount = 0;
+let selectedPaymentMethod = 'upi'; // 'upi' or 'cod'
 let qrCodeInstance = null;
 
 // Escape HTML utility to prevent XSS
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadCartData();
   renderOrderSummary();
   generateUpiQrCode();
+  setupPaymentMethodListeners();
 });
 
 // Load cart items from localStorage
@@ -46,7 +49,7 @@ function loadCartData() {
   }
 }
 
-// Compute cart calculations
+// Compute cart calculations including optional 5% COD surcharge
 function calculateCartTotals() {
   const subtotal = currentCart.reduce((sum, item) => {
     const price = Number(item.price) || 0;
@@ -55,9 +58,37 @@ function calculateCartTotals() {
   }, 0);
 
   const discount = Math.min(appliedDiscountAmount, subtotal);
-  const totalPayable = Math.max(0, subtotal - discount);
+  const netSubtotal = Math.max(0, subtotal - discount);
 
-  return { subtotal, discount, totalPayable };
+  // Apply 5% surcharge if COD is selected
+  const codSurcharge = (selectedPaymentMethod === 'cod') ? Math.round(netSubtotal * COD_SURCHARGE_RATE) : 0;
+  const totalPayable = netSubtotal + codSurcharge;
+
+  return { subtotal, discount, codSurcharge, totalPayable };
+}
+
+// Set up payment method event listeners
+function setupPaymentMethodListeners() {
+  const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+  paymentRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      selectedPaymentMethod = e.target.value;
+
+      const utrContainer = document.getElementById('utr-field-container');
+      const qrBox = document.getElementById('qrcode-canvas')?.closest('.bg-white');
+
+      if (selectedPaymentMethod === 'cod') {
+        if (utrContainer) utrContainer.classList.add('hidden');
+        if (qrBox) qrBox.classList.add('opacity-50', 'pointer-events-none');
+      } else {
+        if (utrContainer) utrContainer.classList.remove('hidden');
+        if (qrBox) qrBox.classList.remove('opacity-50', 'pointer-events-none');
+        generateUpiQrCode();
+      }
+
+      updateTotalsDisplay();
+    });
+  });
 }
 
 // Render Order Summary Sidebar Items
@@ -89,11 +120,13 @@ function renderOrderSummary() {
 
 // Update Totals UI elements
 function updateTotalsDisplay() {
-  const { subtotal, discount, totalPayable } = calculateCartTotals();
+  const { subtotal, discount, codSurcharge, totalPayable } = calculateCartTotals();
 
   const subtotalEl = document.getElementById('checkout-subtotal');
   const discountRow = document.getElementById('discount-row');
   const discountEl = document.getElementById('checkout-discount');
+  const codRow = document.getElementById('cod-surcharge-row');
+  const codEl = document.getElementById('checkout-cod-surcharge');
   const totalEl = document.getElementById('checkout-total');
   const qrAmountDisplay = document.getElementById('qr-amount-display');
 
@@ -105,6 +138,15 @@ function updateTotalsDisplay() {
       discountRow.classList.remove('hidden');
     } else {
       discountRow.classList.add('hidden');
+    }
+  }
+
+  if (codRow && codEl) {
+    if (codSurcharge > 0) {
+      codEl.textContent = `+₹${codSurcharge.toLocaleString('en-IN')}`;
+      codRow.classList.remove('hidden');
+    } else {
+      codRow.classList.add('hidden');
     }
   }
 
@@ -140,131 +182,6 @@ function generateUpiQrCode() {
   }
 }
 
-/**
- * Embedded Coupon Engine
- * Evaluates target brand/category, minimum purchase, max discount caps, and expiry date.
- */
-async function applyCouponCode() {
-  const inputEl = document.getElementById('coupon-input');
-  const msgEl = document.getElementById('coupon-msg');
-  if (!inputEl) return;
-
-  const code = inputEl.value.trim().toUpperCase();
-
-  if (!code) {
-    if (msgEl) {
-      msgEl.textContent = 'Please enter a coupon code.';
-      msgEl.className = 'text-xs mt-2 text-red-600 font-semibold block';
-    }
-    return;
-  }
-
-  const { subtotal } = calculateCartTotals();
-
-  try {
-    // 1. Fetch coupons data from JSON
-    const response = await fetch('./data/coupons.json');
-    if (!response.ok) throw new Error('Coupons file could not be loaded.');
-    const coupons = await response.json();
-
-    // 2. Locate matching promo code
-    const coupon = coupons.find(c => c.code.toUpperCase() === code);
-
-    if (!coupon || coupon.status !== 'active') {
-      if (msgEl) {
-        msgEl.textContent = 'Invalid or inactive promo code.';
-        msgEl.className = 'text-xs mt-2 text-red-600 font-semibold block';
-      }
-      return;
-    }
-
-    // 3. Expiration Date Check
-    if (coupon.expiryDate && new Date(coupon.expiryDate) < new Date()) {
-      if (msgEl) {
-        msgEl.textContent = 'This promo code has expired.';
-        msgEl.className = 'text-xs mt-2 text-red-600 font-semibold block';
-      }
-      return;
-    }
-
-    // 4. Target Checking & Eligible Subtotal Calculation
-    let eligibleSubtotal = 0;
-
-    if (coupon.target_type === 'all' || coupon.target_value === '*') {
-      eligibleSubtotal = subtotal;
-    } else {
-      // Split target values by comma (e.g. "Eastman, JRSD" -> ["eastman", "jrsd"])
-      const targets = String(coupon.target_value)
-        .split(',')
-        .map(t => t.trim().toLowerCase());
-
-      currentCart.forEach(item => {
-        const itemBrand = String(item.brand || '').toLowerCase();
-        const itemCategory = String(item.category || item.brand || '').toLowerCase();
-        const itemTitle = String(item.title || '').toLowerCase();
-
-        const isMatch = targets.some(target => 
-          itemBrand.includes(target) || 
-          itemCategory.includes(target) || 
-          itemTitle.includes(target)
-        );
-
-        if (isMatch) {
-          eligibleSubtotal += (Number(item.price) || 0) * (Number(item.quantity) || 0);
-        }
-      });
-    }
-
-    if (eligibleSubtotal === 0) {
-      if (msgEl) {
-        msgEl.textContent = `This code is only applicable for target items: "${coupon.target_value}".`;
-        msgEl.className = 'text-xs mt-2 text-red-600 font-semibold block';
-      }
-      return;
-    }
-
-    // 5. Minimum Purchase Requirement Check
-    if (coupon.min_purchase && subtotal < coupon.min_purchase) {
-      if (msgEl) {
-        msgEl.textContent = `Minimum purchase of ₹${coupon.min_purchase} required for this code.`;
-        msgEl.className = 'text-xs mt-2 text-red-600 font-semibold block';
-      }
-      return;
-    }
-
-    // 6. Discount Calculation
-    let calculatedDiscount = 0;
-    if (coupon.discount_type === 'fixed') {
-      calculatedDiscount = coupon.discount_value;
-    } else if (coupon.discount_type === 'percentage') {
-      calculatedDiscount = Math.round((eligibleSubtotal * coupon.discount_value) / 100);
-    }
-
-    // Cap at max_discount limit if set
-    if (coupon.max_discount && calculatedDiscount > coupon.max_discount) {
-      calculatedDiscount = coupon.max_discount;
-    }
-
-    // Set globally and update UI
-    appliedDiscountAmount = Math.min(calculatedDiscount, subtotal);
-
-    if (msgEl) {
-      msgEl.textContent = `Code "${coupon.code}" applied! Saved ₹${appliedDiscountAmount}.`;
-      msgEl.className = 'text-xs mt-2 text-green-600 font-bold block';
-    }
-
-    updateTotalsDisplay();
-    generateUpiQrCode();
-
-  } catch (err) {
-    console.error('Error executing internal coupon engine:', err);
-    if (msgEl) {
-      msgEl.textContent = 'Failed to process coupon. Please try again.';
-      msgEl.className = 'text-xs mt-2 text-red-600 font-semibold block';
-    }
-  }
-}
-
 // Order Submission Handler
 async function placeOrder() {
   const name = document.getElementById('cust-name')?.value.trim();
@@ -272,19 +189,19 @@ async function placeOrder() {
   const address = document.getElementById('cust-address')?.value.trim();
   const paymentRef = document.getElementById('payment-ref')?.value.trim();
 
-  // 1. Validate Form Inputs
+  // Validate Mandatory Fields
   if (!name || !phone || !address) {
     alert('Please fill in all mandatory shipping address fields (*).');
     return;
   }
 
-  if (!paymentRef || paymentRef.length < 6) {
+  // Validate UTR only if UPI is selected
+  if (selectedPaymentMethod === 'upi' && (!paymentRef || paymentRef.length < 6)) {
     alert('Please enter a valid UPI Reference / Transaction UTR Number.');
     return;
   }
 
-  // 2. Format Items List for WhatsApp
-  const { subtotal, discount, totalPayable } = calculateCartTotals();
+  const { subtotal, discount, codSurcharge, totalPayable } = calculateCartTotals();
   
   const itemsText = currentCart.map((item, index) => {
     const qty = Number(item.quantity) || 0;
@@ -292,7 +209,10 @@ async function placeOrder() {
     return `${index + 1}. *${item.title}*\n   Qty: ${qty} | Price: ₹${(price * qty).toLocaleString('en-IN')}`;
   }).join('\n');
 
-  // 3. Construct WhatsApp Message
+  const paymentText = selectedPaymentMethod === 'cod'
+    ? `💵 *Payment Method:* Pay on Delivery (COD)\n➕ *COD Surcharge (5%):* ₹${codSurcharge.toLocaleString('en-IN')}`
+    : `💵 *Payment Method:* Prepaid (UPI)\n💳 *UPI UTR / Ref No:* ${paymentRef}`;
+
   const orderMessage = 
 `🛒 *NEW ORDER RECEIVED - HARYANA TOOLS*
 ----------------------------------------
@@ -307,19 +227,19 @@ ${itemsText}
 ----------------------------------------
 💵 *Subtotal:* ₹${subtotal.toLocaleString('en-IN')}
 🏷️ *Discount:* -₹${discount.toLocaleString('en-IN')}
-💰 *Total Paid:* ₹${totalPayable.toLocaleString('en-IN')}
-💳 *UPI UTR / Ref No:* ${paymentRef}
+${paymentText}
+💰 *Total Amount:* ₹${totalPayable.toLocaleString('en-IN')}
 ----------------------------------------
 _Please confirm my order placement!_`;
 
-  // 4. Open WhatsApp in a new tab
+  // 1. Send WhatsApp Message
   const encodedMsg = encodeURIComponent(orderMessage);
   const whatsappUrl = `https://wa.me/${BUSINESS_PHONE}?text=${encodedMsg}`;
   window.open(whatsappUrl, '_blank');
 
-  // 5. Clear Cart from Local Storage
+  // 2. Clear Local Storage Cart
   localStorage.removeItem(CART_STORAGE_KEY);
 
-  // 6. Redirect main browser window to success page
+  // 3. Redirect Main Window to Success Page
   window.location.href = './checkout-success.html';
 }
