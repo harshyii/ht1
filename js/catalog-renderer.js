@@ -18,63 +18,40 @@ const CATALOG_CONFIG = {
   filteredProducts: []
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Parse 'cat' or 'category' parameter from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const brandFilter = urlParams.get('brand');
-  const categoryFilter = urlParams.get('category');
-  const searchQuery = urlParams.get('search');
+  const selectedCat = urlParams.get('cat') || urlParams.get('category');
 
-  try {
-    const res = await fetch('data/products.json');
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
-    const allProducts = await res.json();
-    let products = allProducts;
-
-    // Apply active filters with resilient string matching
-    if (brandFilter) {
-      const targetBrand = brandFilter.trim().toLowerCase();
-      products = products.filter(p => {
-        const productBrand = (p.brand || p.specs?.['Brand Name'] || '').trim().toLowerCase();
-        return productBrand === targetBrand;
-      });
-      updateFilterBadge(`Brand: ${brandFilter}`);
-    } else if (categoryFilter) {
-      const targetCategory = categoryFilter.trim().toLowerCase();
-      products = products.filter(p => {
-        const productCategory = (p.category || p.specs?.['Category'] || '').trim().toLowerCase();
-        return productCategory === targetCategory;
-      });
-      updateFilterBadge(`Category: ${categoryFilter}`);
-    } else if (searchQuery) {
-      const query = searchQuery.trim().toLowerCase();
-      products = products.filter(p => 
-        (p.title || '').toLowerCase().includes(query) ||
-        (p.brand || '').toLowerCase().includes(query) ||
-        (p.category || '').toLowerCase().includes(query)
-      );
-      updateFilterBadge(`Search: "${searchQuery}"`);
-    }
-
-    CATALOG_CONFIG.filteredProducts = products;
-
-    // Subtitle update
-    const subTitle = document.getElementById('catalog-subtitle');
-    if (subTitle) {
-      subTitle.textContent = `Showing ${products.length} product${products.length !== 1 ? 's' : ''}`;
-    }
-
-    // Initial render
-    renderCatalogPage(1, false);
-
-  } catch (err) {
-    console.error('Error fetching catalog data:', err);
-    const grid = document.getElementById('products-grid');
-    if (grid) {
-      grid.innerHTML = `<div class="col-span-full py-12 text-center text-red-500 font-medium">Failed to load product catalog. Please verify data/products.json exists.</div>`;
-    }
+  // 2. Set dropdown value if element exists
+  const categorySelect = document.getElementById('category-select'); // Adjust ID to match your HTML select/filter
+  if (categorySelect && selectedCat) {
+    categorySelect.value = selectedCat;
   }
+
+  // 3. Render or filter products based on URL parameter
+  applyCatalogFilters(selectedCat);
 });
+
+// Main filtering logic
+function applyCatalogFilters(categoryKey) {
+  // Replace 'ALL_PRODUCTS' with your global/fetched product array variable
+  if (!Array.isArray(ALL_PRODUCTS)) return;
+
+  let filtered = ALL_PRODUCTS;
+
+  if (categoryKey && categoryKey.toLowerCase() !== 'all') {
+    filtered = ALL_PRODUCTS.filter(product => {
+      // Normalizes strings for comparison (handles both 'handtools' slug & 'Hand Tools' name)
+      const prodCat = (product.category || '').toLowerCase().replace(/\s+/g, '');
+      const searchCat = categoryKey.toLowerCase().replace(/\s+/g, '');
+      
+      return prodCat.includes(searchCat);
+    });
+  }
+
+  renderProductGrid(filtered);
+}
 
 /**
  * Generates an Ad Card HTML string styled like product/blog cards
