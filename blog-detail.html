@@ -10,17 +10,37 @@
 <body class="bg-gray-50 min-h-screen flex flex-col font-sans">
 
   <!-- Navigation Bar -->
-  <header class="bg-gray-900 text-white shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-      <a href="/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">Haryana Tools</a>
-      <nav class="flex gap-6 items-center">
-        <a href="/index.html" class="hover:text-yellow-400 font-medium text-sm transition">Home</a>
-        <a href="/catalog.html" class="hover:text-yellow-400 font-medium text-sm transition">Catalog</a>
-        <a href="/ blogs.html" class="text-yellow-400 font-bold text-sm transition">Blogs</a>
-        <a href="/cart.html" class="bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg font-bold hover:bg-yellow-400 text-sm transition shadow">
-          🛒 Cart
+<header class="bg-dark text-white sticky-top shadow-sm py-2">
+    <div class="container-fluid max-w-7xl px-3">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        
+        <!-- Brand Logo -->
+        <a href="/" class="text-warning fw-bold fs-5 text-decoration-none text-nowrap">
+          Haryana Tools
         </a>
-      </nav>
+
+        <!-- Header Search Form -->
+        <form action="/catalog.html" method="GET" class="flex-grow-1 mx-md-4 my-1 my-md-0" style="max-width: 480px;">
+          <div class="input-group input-group-sm">
+            <input type="text" name="q" class="form-bg-white form-control border-secondary" placeholder="Search tools, brands, or categories..." aria-label="Search Catalog" required>
+            <button class="btn btn-warning font-weight-bold" type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Navigation Links -->
+        <nav class="d-flex align-items-center gap-2 gap-sm-3">
+          <a href="/" class="text-light text-decoration-none small">Home</a>
+          <a href="/catalog.html" class="text-light text-decoration-none small">Catalog</a>
+          <a href="/blogs.html" class="text-light text-decoration-none small">Blogs</a>
+          <a href="/cart.html" class="btn btn-warning btn-sm fw-bold d-inline-flex align-items-center gap-1 py-1 px-2">
+            <span>🛒</span>
+            <span class="badge bg-dark text-white rounded-circle ms-1" id="cart-badge-count">0</span>
+          </a>
+        </nav>
+
+      </div>
     </div>
   </header>
 

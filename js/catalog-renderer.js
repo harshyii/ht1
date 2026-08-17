@@ -19,38 +19,163 @@ const CATALOG_CONFIG = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Parse 'cat' or 'category' parameter from URL
+  // 1. Parse URL parameters for category and search text
   const urlParams = new URLSearchParams(window.location.search);
-  const selectedCat = urlParams.get('cat') || urlParams.get('category');
+  const selectedCat = urlParams.get('cat') || urlParams.get('category') || 'all';
+  const searchQuery = urlParams.get('q') || urlParams.get('search') || '';
 
-  // 2. Set dropdown value if element exists
-  const categorySelect = document.getElementById('category-select'); // Adjust ID to match your HTML select/filter
+  // 2. Sync input elements with URL state
+  const categorySelect = document.getElementById('category-select');
   if (categorySelect && selectedCat) {
     categorySelect.value = selectedCat;
   }
 
-  // 3. Render or filter products based on URL parameter
-  applyCatalogFilters(selectedCat);
-});
+  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
+  if (searchInput && searchQuery) {
+    searchInput.value = searchQuery;
+  }
 
-// Main filtering logic
-function applyCatalogFilters(categoryKey) {
-  // Replace 'ALL_PRODUCTS' with your global/fetched product array variable
-  if (!Array.isArray(ALL_PRODUCTS)) return;
-
-  let filtered = ALL_PRODUCTS;
-
-  if (categoryKey && categoryKey.toLowerCase() !== 'all') {
-    filtered = ALL_PRODUCTS.filter(product => {
-      // Normalizes strings for comparison (handles both 'handtools' slug & 'Hand Tools' name)
-      const prodCat = (product.category || '').toLowerCase().replace(/\s+/g, '');
-      const searchCat = categoryKey.toLowerCase().replace(/\s+/g, '');
-      
-      return prodCat.includes(searchCat);
+  // 3. Bind event listeners for input interaction
+  if (categorySelect) {
+    categorySelect.addEventListener('change', () => {
+      applyCatalogFilters();
     });
   }
 
-  renderProductGrid(filtered);
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      applyCatalogFilters();
+    });
+  }
+
+  const searchForm = document.getElementById('catalog-search-form') || document.getElementById('search-form');
+  if (searchForm) {
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      applyCatalogFilters();
+    });
+  }
+
+  // 4. Initial filter run on page load
+  applyCatalogFilters();
+});
+
+/**
+ * Reads UI inputs or URL params to filter products by category and search keyword
+ */
+function applyCatalogFilters(overrideCat, overrideSearch) {
+  const allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
+  if (!Array.isArray(allProducts)) return;
+
+  // Resolve active category filter
+  const categorySelect = document.getElementById('category-select');
+  const categoryKey = overrideCat !== undefined 
+    ? overrideCat 
+    : (categorySelect ? categorySelect.value : new URLSearchParams(window.location.search).get('cat') || 'all');
+
+  // Resolve active search text query
+  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
+  const searchQuery = overrideSearch !== undefined 
+    ? overrideSearch 
+    : (searchInput ? searchInput.value : new URLSearchParams(window.location.search).get('q') || '');
+
+  const normalizedSearch = searchQuery.toLowerCase().trim();
+  const normalizedCategory = (categoryKey || '').toLowerCase().replace(/\s+/g, '');
+
+  CATALOG_CONFIG.filteredProducts = allProducts.filter(product => {
+    // 1. Category Matching
+    let matchesCategory = true;
+    if (normalizedCategory && normalizedCategory !== 'all') {
+      const prodCat = (product.category || '').toLowerCase().replace(/\s+/g, '');
+      matchesCategory = prodCat.includes(normalizedCategory);
+    }
+
+    // 2. Search Term Matching (Title, Brand, Category, SKU/ID)
+    let matchesSearch = true;
+    if (normalizedSearch) {
+      const titleMatch = (product.title || '').toLowerCase().includes(normalizedSearch);
+      const brandMatch = (product.brand || '').toLowerCase().includes(normalizedSearch);
+      const catMatch = (product.category || '').toLowerCase().includes(normalizedSearch);
+      const skuMatch = String(product.id || product.asin || '').toLowerCase().includes(normalizedSearch);
+
+      matchesSearch = titleMatch || brandMatch || catMatch || skuMatch;
+    }
+
+    return matchesCategory && matchesSearch;
+  });
+
+  // Update URL parameters without reloading page
+  updateUrlParams(categoryKey, searchQuery);
+
+  // Update active filter badge indicator
+  updateFilterBadges(categoryKey, searchQuery);
+
+  // Reset to page 1 and render grid
+  renderCatalogPage(1, false);
+}
+
+/**
+ * Dynamically updates URL query parameters to reflect active filters
+ */
+function updateUrlParams(category, query) {
+  const url = new URL(window.location.href);
+  
+  if (category && category.toLowerCase() !== 'all') {
+    url.searchParams.set('cat', category);
+  } else {
+    url.searchParams.delete('cat');
+    url.searchParams.delete('category');
+  }
+
+  if (query && query.trim() !== '') {
+    url.searchParams.set('q', query.trim());
+  } else {
+    url.searchParams.delete('q');
+    url.searchParams.delete('search');
+  }
+
+  window.history.replaceState({}, '', url.toString());
+}
+
+/**
+ * Updates UI filter status indicators and badges
+ */
+function updateFilterBadges(category, query) {
+  const container = document.getElementById('active-filters');
+  const badge = document.getElementById('filter-badge');
+
+  if (!container || !badge) return;
+
+  const labels = [];
+  if (category && category.toLowerCase() !== 'all') {
+    labels.push(`Category: ${category}`);
+  }
+  if (query && query.trim() !== '') {
+    labels.push(`Search: "${query.trim()}"`);
+  }
+
+  if (labels.length > 0) {
+    badge.innerHTML = `
+      ${escapeHtml(labels.join(' | '))}
+      <button onclick="resetCatalogFilters()" class="hover:text-red-600 font-bold ml-2 cursor-pointer">×</button>
+    `;
+    container.classList.remove('hidden');
+  } else {
+    container.classList.add('hidden');
+  }
+}
+
+/**
+ * Clears current search and category filters
+ */
+function resetCatalogFilters() {
+  const categorySelect = document.getElementById('category-select');
+  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
+
+  if (categorySelect) categorySelect.value = 'all';
+  if (searchInput) searchInput.value = '';
+
+  applyCatalogFilters('all', '');
 }
 
 /**
@@ -59,22 +184,18 @@ function applyCatalogFilters(categoryKey) {
 function createAdCardTemplate(adSlotId = 'infeed-ad-slot') {
   return `
     <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between relative min-h-[360px] p-4 text-center">
-      <!-- Top Tag -->
       <div class="flex justify-between items-center text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-2">
         <span>Sponsored</span>
         <i class="fa-solid fa-rectangle-ad text-gray-400 text-xs"></i>
       </div>
 
-      <!-- Main Ad Container (Google AdSense / Custom Script Anchor) -->
       <div class="flex-grow flex flex-col items-center justify-center py-6">
-        <!-- Replace this inner block with your ad script tag (e.g., <ins class="adsbygoogle" ...></ins>) -->
         <div id="${adSlotId}" class="w-full h-full flex flex-col items-center justify-center rounded bg-white border border-gray-200 p-4">
           <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Advertisement</span>
           <p class="text-[11px] text-gray-400 mt-1">Your Banner or AdSense Script Here</p>
         </div>
       </div>
 
-      <!-- Bottom Spacer / CTA Placeholder -->
       <div class="mt-2 pt-2 border-t border-gray-200 text-left flex items-center justify-between text-xs text-gray-400">
         <span>Promoted Item</span>
         <span class="text-blue-600 hover:underline cursor-pointer font-medium">Learn More &rarr;</span>
@@ -98,8 +219,8 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
       <div class="col-span-full py-16 text-center">
         <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i>
         <h3 class="text-lg font-bold text-gray-700">No Products Found</h3>
-        <p class="text-sm text-gray-500 mt-1">Try resetting your search or filter criteria.</p>
-        <a href="catalog.html" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition">View All Products</a>
+        <p class="text-sm text-gray-500 mt-1">Try adjusting your search criteria or resetting filters.</p>
+        <button onclick="resetCatalogFilters()" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition cursor-pointer">Clear Filters</button>
       </div>`;
     
     const pagContainer = document.getElementById('catalog-pagination-container');
@@ -231,20 +352,4 @@ function renderCatalogPaginationControls(totalItems, currentPage, pageSize) {
       </nav>
     </div>
   `;
-}
-
-/**
- * Updates active filter pill UI badge
- */
-function updateFilterBadge(label) {
-  const container = document.getElementById('active-filters');
-  const badge = document.getElementById('filter-badge');
-
-  if (container && badge) {
-    badge.innerHTML = `
-      ${escapeHtml(label)}
-      <a href="catalog.html" class="hover:text-red-600 font-bold ml-1">×</a>
-    `;
-    container.classList.remove('hidden');
-  }
 }

@@ -15,36 +15,57 @@
 </head>
 <body class="bg-light">
 
-  <header class="bg-dark text-white sticky-top shadow-sm">
-  <div class="container-fluid max-w-7xl px-3 py-2">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-      
-      <!-- Brand Logo -->
-      <a href="/" class="text-warning fw-bold fs-5 text-decoration-none text-nowrap">
-        Haryana Tools
-      </a>
-
-      <!-- Navigation Links -->
-      <nav class="d-flex align-items-center gap-2 gap-sm-3">
-        <a href="/" class="text-light text-decoration-none small">Home</a>
-        <a href="/catalog.html" class="text-light text-decoration-none small">Catalog</a>
-        <a href="/blogs.html" class="text-light text-decoration-none small">Blogs</a>
-        <a href="/cart.html" class="btn btn-warning btn-sm fw-bold d-inline-flex align-items-center gap-1 py-1 px-2">
-          <span>🛒</span>
-          <span class="badge bg-dark text-white rounded-circle ms-1" id="cart-badge-count">0</span>
+  <header class="bg-dark text-white sticky-top shadow-sm py-2">
+    <div class="container-fluid max-w-7xl px-3">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        
+        <!-- Brand Logo -->
+        <a href="/" class="text-warning fw-bold fs-5 text-decoration-none text-nowrap">
+          Haryana Tools
         </a>
-      </nav>
 
+        <!-- Header Search Form -->
+        <form action="/catalog.html" method="GET" class="flex-grow-1 mx-md-4 my-1 my-md-0" style="max-width: 480px;">
+          <div class="input-group input-group-sm">
+            <input type="text" name="q" class="form-bg-white form-control border-secondary" placeholder="Search tools, brands, or categories..." aria-label="Search Catalog" required>
+            <button class="btn btn-warning font-weight-bold" type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Navigation Links -->
+        <nav class="d-flex align-items-center gap-2 gap-sm-3">
+          <a href="/" class="text-light text-decoration-none small">Home</a>
+          <a href="/catalog.html" class="text-light text-decoration-none small">Catalog</a>
+          <a href="/blogs.html" class="text-light text-decoration-none small">Blogs</a>
+          <a href="/cart.html" class="btn btn-warning btn-sm fw-bold d-inline-flex align-items-center gap-1 py-1 px-2">
+            <span>🛒</span>
+            <span class="badge bg-dark text-white rounded-circle ms-1" id="cart-badge-count">0</span>
+          </a>
+        </nav>
+
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 
   <!-- Hero Section -->
   <section class="bg-primary text-white py-5 shadow-sm">
     <div class="container py-4 text-center">
       <h1 class="display-5 fw-bold">Industrial Grade Tools &amp; Equipment</h1>
       <p class="lead mb-4">Official Wholesaler for Eastman, Taparia, Stanley, and Premium Hardware Brands.</p>
-      <a href="/catalog.html" class="btn btn-warning btn-lg fw-bold px-4">Shop Full Catalog</a>
+      
+      <!-- Search Input in Hero -->
+      <form action="/catalog.html" method="GET" class="mx-auto mb-4" style="max-width: 600px;">
+        <div class="input-group input-group-lg shadow-sm">
+          <input type="text" name="q" class="form-control border-0 px-4" placeholder="What tools are you looking for today?" aria-label="Search catalog">
+          <button class="btn btn-warning text-dark fw-bold px-4" type="submit">
+            Search <i class="fa-solid fa-magnifying-glass ms-1"></i>
+          </button>
+        </div>
+      </form>
+
+      <a href="/catalog.html" class="btn btn-outline-light btn-sm fw-semibold">Or Browse Full Catalog &rarr;</a>
     </div>
   </section>
 
@@ -76,51 +97,51 @@
 
   <!-- Dynamic Footer Injection -->
   <footer class="bg-gray-900 text-gray-400 mt-20 border-t border-gray-800 text-sm">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
-    
-    <!-- Brand Info -->
-    <div class="space-y-3">
-      <a href="/public/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
-      <p class="text-xs text-gray-400 leading-relaxed">
-        Your trusted partner for industrial tools, power machinery, and on-grid solar power systems in Pehowa and beyond.
-      </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Brand Info -->
+      <div class="space-y-3">
+        <a href="/public/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
+        <p class="text-xs text-gray-400 leading-relaxed">
+          Your trusted partner for industrial tools, power machinery, and on-grid solar power systems in Pehowa and beyond.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Quick Links</h3>
+        <ul class="space-y-2 text-xs">
+          <li><a href="/index.html" class="hover:text-yellow-400 transition">Home</a></li>
+          <li><a href="/catalog.html" class="hover:text-yellow-400 transition">Product Catalog</a></li>
+          <li><a href="/blogs.html" class="hover:text-yellow-400 transition">Knowledge Hub / Blogs</a></li>
+          <li><a href="/cart.html" class="hover:text-yellow-400 transition">Cart & Checkout</a></li>
+        </ul>
+      </div>
+
+      <!-- Categories -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Solutions</h3>
+        <ul class="space-y-2 text-xs">
+          <li><a href="/catalog.html?cat=powertools" class="hover:text-yellow-400 transition">Power Tools</a></li>
+          <li><a href="/catalog.html?cat=solar" class="hover:text-yellow-400 transition">On-Grid Solar Systems</a></li>
+          <li><a href="/catalog.html?cat=handtools" class="hover:text-yellow-400 transition">Hand Tools & Equipment</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Contact Us</h3>
+        <p class="text-xs text-gray-400 mb-1">📍 Pehowa, Haryana, India</p>
+        <p class="text-xs text-gray-400 mb-1">📞 Sales & Support: +91 9050623210</p>
+        <p class="text-xs text-gray-400">✉️ support@haryana.tools</p>
+      </div>
+
     </div>
 
-    <!-- Quick Links -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Quick Links</h3>
-      <ul class="space-y-2 text-xs">
-        <li><a href="/index.html" class="hover:text-yellow-400 transition">Home</a></li>
-        <li><a href="/catalog.html" class="hover:text-yellow-400 transition">Product Catalog</a></li>
-        <li><a href="/blogs.html" class="hover:text-yellow-400 transition">Knowledge Hub / Blogs</a></li>
-        <li><a href="/cart.html" class="hover:text-yellow-400 transition">Cart & Checkout</a></li>
-      </ul>
+    <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
+      © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
     </div>
-
-    <!-- Categories -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Solutions</h3>
-      <ul class="space-y-2 text-xs">
-        <li><a href="/catalog.html?cat=powertools" class="hover:text-yellow-400 transition">Power Tools</a></li>
-        <li><a href="/catalog.html?cat=solar" class="hover:text-yellow-400 transition">On-Grid Solar Systems</a></li>
-        <li><a href="/catalog.html?cat=handtools" class="hover:text-yellow-400 transition">Hand Tools & Equipment</a></li>
-      </ul>
-    </div>
-
-    <!-- Contact Info -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Contact Us</h3>
-      <p class="text-xs text-gray-400 mb-1">📍 Pehowa, Haryana, India</p>
-      <p class="text-xs text-gray-400 mb-1">📞 Sales & Support: +91 9050623210</p>
-      <p class="text-xs text-gray-400">✉️ support@haryana.tools</p>
-    </div>
-
-  </div>
-
-  <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
-    © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
-  </div>
-</footer>
+  </footer>
 
   <!-- Core Scripts -->
   <script src="./js/app.js"></script>
@@ -146,7 +167,7 @@
         if (Array.isArray(products) && products.length > 0) {
           const featuredProducts = products.slice(0, 8);
 
-          // Render HTML with clean data attributes instead of inline inline JS strings
+          // Render HTML with clean data attributes instead of inline JS strings
           prodContainer.innerHTML = featuredProducts.map((prod) => {
             const prodId = prod.id || prod.asin || '';
             const title = prod.title || 'Product';
@@ -198,16 +219,15 @@
               thumbnail: btn.dataset.image
             };
 
-           // Replace with this updated block:
-          const cartHandler = (window.App && window.App.addToCart) || (typeof App !== 'undefined' && App.addToCart);
+            const cartHandler = (window.App && window.App.addToCart) || (typeof App !== 'undefined' && App.addToCart);
 
-          if (typeof cartHandler === 'function') {
-            cartHandler.call(window.App || App, productData);
-          } else if (typeof window.addToCart === 'function') {
-            window.addToCart(productData.id, productData.title, productData.currentPrice, productData.thumbnail);
-          } else {
-            console.error('No add to cart handler found in application scope.');
-          }
+            if (typeof cartHandler === 'function') {
+              cartHandler.call(window.App || App, productData);
+            } else if (typeof window.addToCart === 'function') {
+              window.addToCart(productData.id, productData.title, productData.currentPrice, productData.thumbnail);
+            } else {
+              console.error('No add to cart handler found in application scope.');
+            }
           });
 
         } else {
