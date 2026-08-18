@@ -16,10 +16,10 @@ function getQueryParams() {
  */
 const Navigation = {
   toCatalogByBrand: (brandName) => {
-    return `/catalog.html?brand=${encodeURIComponent(brandName)}`;
+    return `/public/catalog.html?brand=${encodeURIComponent(brandName)}`;
   },
   toCatalogByCategory: (categoryName) => {
-    return `/public/ catalog.html?category=${encodeURIComponent(categoryName)}`;
+    return `/public/catalog.html?cat=${encodeURIComponent(categoryName)}`;
   },
   toProductDetails: (productId) => {
     return `/public/product.html?id=${encodeURIComponent(productId)}`;
