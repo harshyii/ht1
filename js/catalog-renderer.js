@@ -67,6 +67,7 @@ if (document.readyState === 'loading') {
   initCatalog();
 }
 window.addEventListener('productsLoaded', initCatalog);
+window.addEventListener('load', initCatalog);
 
 /**
  * Reads UI inputs or URL params to filter products by category, brand, and search keyword
@@ -80,7 +81,6 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
     if (grid && !grid.dataset.loading) {
       grid.dataset.loading = "true";
       grid.innerHTML = `<div class="col-span-full py-16 text-center text-gray-400">Loading products...</div>`;
-      // Retry once products array populates
       let attempts = 0;
       const checkInterval = setInterval(() => {
         attempts++;
@@ -101,17 +101,17 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  // 1. Resolve active category filter (Checks both 'cat' and 'category')
+  // 1. Resolve active category filter
   const categorySelect = document.getElementById('category-select');
   const categoryKey = overrideCat !== undefined 
     ? overrideCat 
-    : (categorySelect ? categorySelect.value : (urlParams.get('cat') || urlParams.get('category') || 'all'));
+    : (categorySelect && categorySelect.value ? categorySelect.value : (urlParams.get('cat') || urlParams.get('category') || 'all'));
 
-  // 2. Resolve active search text query (Checks both 'q' and 'search')
+  // 2. Resolve active search text query
   const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
   const searchQuery = overrideSearch !== undefined 
     ? overrideSearch 
-    : (searchInput ? searchInput.value : (urlParams.get('q') || urlParams.get('search') || ''));
+    : (searchInput && searchInput.value ? searchInput.value : (urlParams.get('q') || urlParams.get('search') || ''));
 
   // 3. Resolve active brand query parameter
   const brandQuery = overrideBrand !== undefined 
@@ -119,22 +119,22 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
     : (urlParams.get('brand') || '');
 
   const normalizedSearch = searchQuery.toLowerCase().trim();
-  const normalizedCategory = decodeURIComponent(categoryKey || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-  const normalizedBrand = decodeURIComponent(brandQuery || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const normalizedCategory = decodeURIComponent(categoryKey || '').toLowerCase().trim();
+  const normalizedBrand = decodeURIComponent(brandQuery || '').toLowerCase().trim();
 
   CATALOG_CONFIG.filteredProducts = allProducts.filter(product => {
     // 1. Category Matching
     let matchesCategory = true;
     if (normalizedCategory && normalizedCategory !== 'all') {
-      const prodCat = (product.category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      matchesCategory = prodCat.includes(normalizedCategory) || normalizedCategory.includes(prodCat);
+      const prodCat = (product.category || '').toLowerCase().trim();
+      matchesCategory = prodCat === normalizedCategory || prodCat.includes(normalizedCategory);
     }
 
     // 2. Brand Parameter Matching
     let matchesBrand = true;
     if (normalizedBrand) {
-      const prodBrand = (product.brand || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      matchesBrand = prodBrand.includes(normalizedBrand) || normalizedBrand.includes(prodBrand);
+      const prodBrand = (product.brand || '').toLowerCase().trim();
+      matchesBrand = prodBrand === normalizedBrand || prodBrand.includes(normalizedBrand);
     }
 
     // 3. Search Term Matching (Title, Brand, Category, SKU/ID)
@@ -230,7 +230,7 @@ function resetCatalogFilters() {
 }
 
 /**
- * Generates an Ad Card HTML string styled like product/blog cards
+ * Generates an Ad Card HTML string styled like product cards
  */
 function createAdCardTemplate(adSlotId = 'infeed-ad-slot') {
   return `
@@ -287,14 +287,14 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
   // Build grid items (products + injected ad cards)
   let gridCardsHtml = '';
   paginatedProducts.forEach((p, index) => {
-    const mainImg = (Array.isArray(p.images) && p.images[0]) || p.featuredImage || p.thumbnail || 'https://via.placeholder.com/300';
+    const mainImg = (Array.isArray(p.images) && p.images[0]) || p.featuredImage || p.thumbnail || p.image || 'https://via.placeholder.com/300';
     const detailUrl = `product.html?id=${encodeURIComponent(p.id || p.asin || '')}`;
 
     const formattedPrice = typeof p.currentPrice === 'number' 
       ? '₹' + p.currentPrice.toLocaleString() 
-      : 'Price on Request';
+      : (p.price ? '₹' + p.price : 'Price on Request');
 
-    const formattedMrp = typeof p.mrp === 'number' && p.mrp > p.currentPrice 
+    const formattedMrp = typeof p.mrp === 'number' && p.mrp > (p.currentPrice || p.price)
       ? `<span class="text-xs text-gray-400 line-through ml-1">₹${p.mrp.toLocaleString()}</span>` 
       : '';
 
