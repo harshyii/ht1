@@ -31,6 +31,22 @@ const CATALOG_CONFIG = {
 };
 
 /**
+ * Global handler for Add to Cart action
+ */
+function addToCart(productId) {
+  const allProducts = window.ALL_PRODUCTS || [];
+  const product = allProducts.find(p => String(p.id || p.asin) === String(productId));
+  
+  if (product) {
+    // Custom event or logic to handle adding to cart
+    window.dispatchEvent(new CustomEvent('cart:add', { detail: product }));
+    alert(`Added "${product.title}" to cart!`);
+  } else {
+    console.error('Product not found for ID:', productId);
+  }
+}
+
+/**
  * Initializes catalog filter execution and binds events
  */
 function initCatalog() {
@@ -288,6 +304,7 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
   paginatedProducts.forEach((p, index) => {
     const mainImg = (Array.isArray(p.images) && p.images[0]) || p.featuredImage || p.thumbnail || p.image || 'https://via.placeholder.com/300';
     const detailUrl = `product.html?id=${encodeURIComponent(p.id || p.asin || '')}`;
+    const productId = p.id || p.asin || '';
 
     const formattedPrice = typeof p.currentPrice === 'number' 
       ? '₹' + p.currentPrice.toLocaleString() 
@@ -315,9 +332,9 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
               <span class="text-base font-extrabold text-gray-900">${formattedPrice}</span>
               ${formattedMrp}
             </div>
-            <a href="${detailUrl}" class="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-semibold hover:bg-blue-600 transition flex items-center gap-1">
-              View <i class="fa-solid fa-arrow-right text-[10px]"></i>
-            </a>
+            <button onclick="addToCart('${escapeHtml(productId)}')" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-cart-shopping text-[10px]"></i> Add to Cart
+            </button>
           </div>
         </div>
       </div>
