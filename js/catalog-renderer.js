@@ -71,32 +71,28 @@ window.addEventListener('load', initCatalog);
 /**
  * Filters ALL_PRODUCTS based on category, brand, and text search
  */
-function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
-  const allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
+async function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
+  let allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
 
-  // Waiting mechanism if ALL_PRODUCTS hasn't loaded yet
+  // Fetch JSON directly if ALL_PRODUCTS is empty or undefined
   if (!Array.isArray(allProducts) || allProducts.length === 0) {
     const grid = document.getElementById('products-grid');
     if (grid && !grid.dataset.loading) {
       grid.dataset.loading = "true";
       grid.innerHTML = `<div class="col-span-full py-16 text-center text-gray-400">Loading products...</div>`;
-      
-      let attempts = 0;
-      const checkInterval = setInterval(() => {
-        attempts++;
-        const readyProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
-        if (Array.isArray(readyProducts) && readyProducts.length > 0) {
-          clearInterval(checkInterval);
-          delete grid.dataset.loading;
-          applyCatalogFilters(overrideCat, overrideSearch, overrideBrand);
-        } else if (attempts > 20) {
-          clearInterval(checkInterval);
-          delete grid.dataset.loading;
-          renderCatalogPage(1, false);
-        }
-      }, 150);
     }
-    return;
+
+    try {
+      const response = await fetch('data/products.json');
+      if (response.ok) {
+        allProducts = await response.json();
+        window.ALL_PRODUCTS = allProducts;
+      }
+    } catch (err) {
+      console.error('Failed to load products for filtering:', err);
+    } finally {
+      if (grid) delete grid.dataset.loading;
+    }
   }
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -123,7 +119,7 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
   const normalizedBrand = decodeURIComponent(brandQuery || '').toLowerCase().trim();
 
   // Filter products array
-  CATALOG_CONFIG.filteredProducts = allProducts.filter(product => {
+  CATALOG_CONFIG.filteredProducts = (allProducts || []).filter(product => {
     // Category match
     let matchesCategory = true;
     if (normalizedCategory && normalizedCategory !== 'all') {
