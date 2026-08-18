@@ -12,14 +12,14 @@ function escapeHtml(str) {
 }
 
 const CATALOG_CONFIG = {
-  pageSize: 8,         // Total cards per page (products + ads combined)
+  pageSize: 8,         // Cards per page
   currentPage: 1,
-  adInterval: 4,       // Insert an ad card after every N items
+  adInterval: 4,       // Insert ad card every N items
   filteredProducts: []
 };
 
 /**
- * Initializes listeners and initial filter execution
+ * Initializes catalog filter execution and binds events
  */
 function initCatalog() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -56,11 +56,10 @@ function initCatalog() {
     searchForm.dataset.bound = "true";
   }
 
-  // Pass URL params to initial filter execution
   applyCatalogFilters(selectedCat, searchQuery, selectedBrand);
 }
 
-// Attach lifecycle loaders
+// Lifecycle Loaders
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initCatalog);
 } else {
@@ -70,17 +69,18 @@ window.addEventListener('productsLoaded', initCatalog);
 window.addEventListener('load', initCatalog);
 
 /**
- * Reads UI inputs or URL params to filter products by category, brand, and search keyword
+ * Filters ALL_PRODUCTS based on category, brand, and text search
  */
 function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
   const allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
-  
-  // If ALL_PRODUCTS is empty or hasn't loaded yet, attempt retry
+
+  // Waiting mechanism if ALL_PRODUCTS hasn't loaded yet
   if (!Array.isArray(allProducts) || allProducts.length === 0) {
     const grid = document.getElementById('products-grid');
     if (grid && !grid.dataset.loading) {
       grid.dataset.loading = "true";
       grid.innerHTML = `<div class="col-span-full py-16 text-center text-gray-400">Loading products...</div>`;
+      
       let attempts = 0;
       const checkInterval = setInterval(() => {
         attempts++;
@@ -101,19 +101,19 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  // 1. Resolve active category filter
+  // 1. Category Resolution
   const categorySelect = document.getElementById('category-select');
   const categoryKey = overrideCat !== undefined 
     ? overrideCat 
     : (categorySelect && categorySelect.value ? categorySelect.value : (urlParams.get('cat') || urlParams.get('category') || 'all'));
 
-  // 2. Resolve active search text query
+  // 2. Search Query Resolution
   const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
   const searchQuery = overrideSearch !== undefined 
     ? overrideSearch 
     : (searchInput && searchInput.value ? searchInput.value : (urlParams.get('q') || urlParams.get('search') || ''));
 
-  // 3. Resolve active brand query parameter
+  // 3. Brand Query Resolution
   const brandQuery = overrideBrand !== undefined 
     ? overrideBrand 
     : (urlParams.get('brand') || '');
@@ -122,22 +122,25 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
   const normalizedCategory = decodeURIComponent(categoryKey || '').toLowerCase().trim();
   const normalizedBrand = decodeURIComponent(brandQuery || '').toLowerCase().trim();
 
+  // Filter products array
   CATALOG_CONFIG.filteredProducts = allProducts.filter(product => {
-    // 1. Category Matching
+    // Category match
     let matchesCategory = true;
     if (normalizedCategory && normalizedCategory !== 'all') {
       const prodCat = (product.category || '').toLowerCase().trim();
-      matchesCategory = prodCat === normalizedCategory || prodCat.includes(normalizedCategory);
+      matchesCategory = prodCat === normalizedCategory || 
+                        prodCat.includes(normalizedCategory) || 
+                        normalizedCategory.includes(prodCat);
     }
 
-    // 2. Brand Parameter Matching
+    // Brand match
     let matchesBrand = true;
     if (normalizedBrand) {
       const prodBrand = (product.brand || '').toLowerCase().trim();
       matchesBrand = prodBrand === normalizedBrand || prodBrand.includes(normalizedBrand);
     }
 
-    // 3. Search Term Matching (Title, Brand, Category, SKU/ID)
+    // Search query match
     let matchesSearch = true;
     if (normalizedSearch) {
       const titleMatch = (product.title || '').toLowerCase().includes(normalizedSearch);
@@ -157,7 +160,7 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
 }
 
 /**
- * Dynamically updates URL query parameters to reflect active filters
+ * Updates URL parameters to reflect active filters
  */
 function updateUrlParams(category, query, brand) {
   const url = new URL(window.location.href);
@@ -186,7 +189,7 @@ function updateUrlParams(category, query, brand) {
 }
 
 /**
- * Updates UI filter status indicators and badges safely
+ * Updates UI filter badge pill bar
  */
 function updateFilterBadges(category, query, brand) {
   const container = document.getElementById('active-filters');
@@ -208,7 +211,7 @@ function updateFilterBadges(category, query, brand) {
   if (labels.length > 0) {
     badge.innerHTML = `
       ${escapeHtml(labels.join(' | '))}
-      <button onclick="resetCatalogFilters()" class="hover:text-red-600 font-bold ml-2 cursor-pointer" aria-label="Clear filters">×</button>
+      <a href="/catalog.html" class="hover:text-red-600 font-bold ml-2 cursor-pointer" aria-label="Clear filters">×</a>
     `;
     container.classList.remove('hidden');
   } else {
@@ -217,20 +220,7 @@ function updateFilterBadges(category, query, brand) {
 }
 
 /**
- * Clears active search, category, and brand filters
- */
-function resetCatalogFilters() {
-  const categorySelect = document.getElementById('category-select');
-  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
-
-  if (categorySelect) categorySelect.value = 'all';
-  if (searchInput) searchInput.value = '';
-
-  applyCatalogFilters('all', '', '');
-}
-
-/**
- * Generates an Ad Card HTML string styled like product cards
+ * Generates sponsored ad card HTML
  */
 function createAdCardTemplate(adSlotId = 'infeed-ad-slot') {
   return `
@@ -256,7 +246,7 @@ function createAdCardTemplate(adSlotId = 'infeed-ad-slot') {
 }
 
 /**
- * Renders a specific page of catalog products with injected ad cards
+ * Renders grid cards and pagination for current page
  */
 function renderCatalogPage(page = 1, scrollToTop = true) {
   CATALOG_CONFIG.currentPage = page;
@@ -271,7 +261,7 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
         <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i>
         <h3 class="text-lg font-bold text-gray-700">No Products Found</h3>
         <p class="text-sm text-gray-500 mt-1">Try adjusting your search criteria or resetting filters.</p>
-        <button onclick="resetCatalogFilters()" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition cursor-pointer">Clear Filters</button>
+        <a href="/catalog.html" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition cursor-pointer">Clear Filters</a>
       </div>`;
     
     const pagContainer = document.getElementById('catalog-pagination-container');
@@ -279,12 +269,10 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
     return;
   }
 
-  // Slice array for current page
   const startIndex = (page - 1) * CATALOG_CONFIG.pageSize;
   const endIndex = Math.min(startIndex + CATALOG_CONFIG.pageSize, totalProducts);
   const paginatedProducts = CATALOG_CONFIG.filteredProducts.slice(startIndex, endIndex);
 
-  // Build grid items (products + injected ad cards)
   let gridCardsHtml = '';
   paginatedProducts.forEach((p, index) => {
     const mainImg = (Array.isArray(p.images) && p.images[0]) || p.featuredImage || p.thumbnail || p.image || 'https://via.placeholder.com/300';
@@ -298,7 +286,6 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
       ? `<span class="text-xs text-gray-400 line-through ml-1">₹${p.mrp.toLocaleString()}</span>` 
       : '';
 
-    // Product Card Markup
     gridCardsHtml += `
       <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
         <a href="${detailUrl}" class="block group p-4 bg-gray-50 flex items-center justify-center h-48 overflow-hidden relative">
@@ -325,25 +312,21 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
       </div>
     `;
 
-    // Inject Ad Card every N items
     if ((index + 1) % CATALOG_CONFIG.adInterval === 0 && (index + 1) !== paginatedProducts.length) {
       gridCardsHtml += createAdCardTemplate(`ad-slot-page-${page}-item-${index + 1}`);
     }
   });
 
   grid.innerHTML = gridCardsHtml;
-
-  // Render pagination controls
   renderCatalogPaginationControls(totalProducts, page, CATALOG_CONFIG.pageSize);
 
-  // Scroll to top of grid on page switch if triggered manually
   if (scrollToTop) {
     grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
 /**
- * Builds and renders pagination controls
+ * Renders pagination buttons
  */
 function renderCatalogPaginationControls(totalItems, currentPage, pageSize) {
   const container = document.getElementById('catalog-pagination-container');
