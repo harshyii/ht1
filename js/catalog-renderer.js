@@ -11,6 +11,18 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+/**
+ * Utility function to shuffle an array (Fisher-Yates Shuffle)
+ */
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 const CATALOG_CONFIG = {
   pageSize: 8,         // Cards per page
   currentPage: 1,
@@ -119,7 +131,7 @@ async function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
   const normalizedBrand = decodeURIComponent(brandQuery || '').toLowerCase().trim();
 
   // Filter products array
-  CATALOG_CONFIG.filteredProducts = (allProducts || []).filter(product => {
+  const filtered = (allProducts || []).filter(product => {
     // Category match
     let matchesCategory = true;
     if (normalizedCategory && normalizedCategory !== 'all') {
@@ -149,6 +161,9 @@ async function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
 
     return matchesCategory && matchesBrand && matchesSearch;
   });
+
+  // Randomize the order of the filtered products array
+  CATALOG_CONFIG.filteredProducts = shuffleArray(filtered);
 
   updateUrlParams(categoryKey, searchQuery, brandQuery);
   updateFilterBadges(categoryKey, searchQuery, brandQuery);
