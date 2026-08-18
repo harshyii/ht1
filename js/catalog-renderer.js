@@ -19,12 +19,11 @@ const CATALOG_CONFIG = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Parse URL parameters for category and search text
   const urlParams = new URLSearchParams(window.location.search);
   const selectedCat = urlParams.get('cat') || urlParams.get('category') || 'all';
+  const selectedBrand = urlParams.get('brand') || '';
   const searchQuery = urlParams.get('q') || urlParams.get('search') || '';
 
-  // 2. Sync input elements with URL state
   const categorySelect = document.getElementById('category-select');
   if (categorySelect && selectedCat) {
     categorySelect.value = selectedCat;
@@ -35,17 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.value = searchQuery;
   }
 
-  // 3. Bind event listeners for input interaction
   if (categorySelect) {
-    categorySelect.addEventListener('change', () => {
-      applyCatalogFilters();
-    });
+    categorySelect.addEventListener('change', () => applyCatalogFilters());
   }
 
   if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      applyCatalogFilters();
-    });
+    searchInput.addEventListener('input', () => applyCatalogFilters());
   }
 
   const searchForm = document.getElementById('catalog-search-form') || document.getElementById('search-form');
@@ -56,9 +50,134 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Initial filter run on page load
-  applyCatalogFilters();
+  // Pass URL params to initial filter execution
+  applyCatalogFilters(selectedCat, searchQuery, selectedBrand);
 });
+
+function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
+  const allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
+  if (!Array.isArray(allProducts)) return;
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Resolve active category filter
+  const categorySelect = document.getElementById('category-select');
+  const categoryKey = overrideCat !== undefined 
+    ? overrideCat 
+    : (categorySelect ? categorySelect.value : urlParams.get('cat') || 'all');
+
+  // Resolve active search text query
+  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
+  const searchQuery = overrideSearch !== undefined 
+    ? overrideSearch 
+    : (searchInput ? searchInput.value : urlParams.get('q') || '');
+
+  // Resolve active brand query parameter
+  const brandQuery = overrideBrand !== undefined 
+    ? overrideBrand 
+    : (urlParams.get('brand') || '');
+
+  const normalizedSearch = searchQuery.toLowerCase().trim();
+  const normalizedCategory = (categoryKey || '').toLowerCase().replace(/\s+/g, '');
+  const normalizedBrand = brandQuery.toLowerCase().replace(/\+/g, ' ').trim();
+
+  CATALOG_CONFIG.filteredProducts = allProducts.filter(product => {
+    // 1. Category Matching
+    let matchesCategory = true;
+    if (normalizedCategory && normalizedCategory !== 'all') {
+      const prodCat = (product.category || '').toLowerCase().replace(/\s+/g, '');
+      matchesCategory = prodCat.includes(normalizedCategory);
+    }
+
+    // 2. Brand Parameter Matching
+    let matchesBrand = true;
+    if (normalizedBrand) {
+      const prodBrand = (product.brand || '').toLowerCase().trim();
+      matchesBrand = prodBrand.includes(normalizedBrand);
+    }
+
+    // 3. Search Term Matching (Title, Brand, Category, SKU/ID)
+    let matchesSearch = true;
+    if (normalizedSearch) {
+      const titleMatch = (product.title || '').toLowerCase().includes(normalizedSearch);
+      const brandMatch = (product.brand || '').toLowerCase().includes(normalizedSearch);
+      const catMatch = (product.category || '').toLowerCase().includes(normalizedSearch);
+      const skuMatch = String(product.id || product.asin || '').toLowerCase().includes(normalizedSearch);
+
+      matchesSearch = titleMatch || brandMatch || catMatch || skuMatch;
+    }
+
+    return matchesCategory && matchesBrand && matchesSearch;
+  });
+
+  updateUrlParams(categoryKey, searchQuery, brandQuery);
+  updateFilterBadges(categoryKey, searchQuery, brandQuery);
+  renderCatalogPage(1, false);
+}
+
+function updateUrlParams(category, query, brand) {
+  const url = new URL(window.location.href);
+  
+  if (category && category.toLowerCase() !== 'all') {
+    url.searchParams.set('cat', category);
+  } else {
+    url.searchParams.delete('cat');
+    url.searchParams.delete('category');
+  }
+
+  if (query && query.trim() !== '') {
+    url.searchParams.set('q', query.trim());
+  } else {
+    url.searchParams.delete('q');
+    url.searchParams.delete('search');
+  }
+
+  if (brand && brand.trim() !== '') {
+    url.searchParams.set('brand', brand.trim());
+  } else {
+    url.searchParams.delete('brand');
+  }
+
+  window.history.replaceState({}, '', url.toString());
+}
+
+function updateFilterBadges(category, query, brand) {
+  const container = document.getElementById('active-filters');
+  const badge = document.getElementById('filter-badge');
+
+  if (!container || !badge) return;
+
+  const labels = [];
+  if (category && category.toLowerCase() !== 'all') {
+    labels.push(`Category: ${category}`);
+  }
+  if (brand && brand.trim() !== '') {
+    labels.push(`Brand: ${brand}`);
+  }
+  if (query && query.trim() !== '') {
+    labels.push(`Search: "${query.trim()}"`);
+  }
+
+  if (labels.length > 0) {
+    badge.innerHTML = `
+      ${escapeHtml(labels.join(' | '))}
+      <button onclick="resetCatalogFilters()" class="hover:text-red-600 font-bold ml-2 cursor-pointer">×</button>
+    `;
+    container.classList.remove('hidden');
+  } else {
+    container.classList.add('hidden');
+  }
+}
+
+function resetCatalogFilters() {
+  const categorySelect = document.getElementById('category-select');
+  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
+
+  if (categorySelect) categorySelect.value = 'all';
+  if (searchInput) searchInput.value = '';
+
+  applyCatalogFilters('all', '', '');
+}
 
 /**
  * Reads UI inputs or URL params to filter products by category and search keyword
