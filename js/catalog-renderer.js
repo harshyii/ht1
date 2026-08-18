@@ -18,7 +18,10 @@ const CATALOG_CONFIG = {
   filteredProducts: []
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+/**
+ * Initializes listeners and initial filter execution
+ */
+function initCatalog() {
   const urlParams = new URLSearchParams(window.location.search);
   const selectedCat = urlParams.get('cat') || urlParams.get('category') || 'all';
   const selectedBrand = urlParams.get('brand') || '';
@@ -34,69 +37,104 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.value = searchQuery;
   }
 
-  if (categorySelect) {
+  if (categorySelect && !categorySelect.dataset.bound) {
     categorySelect.addEventListener('change', () => applyCatalogFilters());
+    categorySelect.dataset.bound = "true";
   }
 
-  if (searchInput) {
+  if (searchInput && !searchInput.dataset.bound) {
     searchInput.addEventListener('input', () => applyCatalogFilters());
+    searchInput.dataset.bound = "true";
   }
 
   const searchForm = document.getElementById('catalog-search-form') || document.getElementById('search-form');
-  if (searchForm) {
+  if (searchForm && !searchForm.dataset.bound) {
     searchForm.addEventListener('submit', (e) => {
       e.preventDefault();
       applyCatalogFilters();
     });
+    searchForm.dataset.bound = "true";
   }
 
   // Pass URL params to initial filter execution
   applyCatalogFilters(selectedCat, searchQuery, selectedBrand);
-});
+}
+
+// Attach lifecycle loaders
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCatalog);
+} else {
+  initCatalog();
+}
+window.addEventListener('productsLoaded', initCatalog);
 
 /**
  * Reads UI inputs or URL params to filter products by category, brand, and search keyword
  */
 function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
   const allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
-  if (!Array.isArray(allProducts)) return;
+  
+  // If ALL_PRODUCTS is empty or hasn't loaded yet, attempt retry
+  if (!Array.isArray(allProducts) || allProducts.length === 0) {
+    const grid = document.getElementById('products-grid');
+    if (grid && !grid.dataset.loading) {
+      grid.dataset.loading = "true";
+      grid.innerHTML = `<div class="col-span-full py-16 text-center text-gray-400">Loading products...</div>`;
+      // Retry once products array populates
+      let attempts = 0;
+      const checkInterval = setInterval(() => {
+        attempts++;
+        const readyProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
+        if (Array.isArray(readyProducts) && readyProducts.length > 0) {
+          clearInterval(checkInterval);
+          delete grid.dataset.loading;
+          applyCatalogFilters(overrideCat, overrideSearch, overrideBrand);
+        } else if (attempts > 20) {
+          clearInterval(checkInterval);
+          delete grid.dataset.loading;
+          renderCatalogPage(1, false);
+        }
+      }, 150);
+    }
+    return;
+  }
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  // Resolve active category filter
+  // 1. Resolve active category filter (Checks both 'cat' and 'category')
   const categorySelect = document.getElementById('category-select');
   const categoryKey = overrideCat !== undefined 
     ? overrideCat 
-    : (categorySelect ? categorySelect.value : urlParams.get('cat') || 'all');
+    : (categorySelect ? categorySelect.value : (urlParams.get('cat') || urlParams.get('category') || 'all'));
 
-  // Resolve active search text query
+  // 2. Resolve active search text query (Checks both 'q' and 'search')
   const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
   const searchQuery = overrideSearch !== undefined 
     ? overrideSearch 
-    : (searchInput ? searchInput.value : urlParams.get('q') || '');
+    : (searchInput ? searchInput.value : (urlParams.get('q') || urlParams.get('search') || ''));
 
-  // Resolve active brand query parameter
+  // 3. Resolve active brand query parameter
   const brandQuery = overrideBrand !== undefined 
     ? overrideBrand 
     : (urlParams.get('brand') || '');
 
   const normalizedSearch = searchQuery.toLowerCase().trim();
-  const normalizedCategory = (categoryKey || '').toLowerCase().replace(/\s+/g, '');
-  const normalizedBrand = brandQuery.toLowerCase().replace(/\+/g, ' ').trim();
+  const normalizedCategory = decodeURIComponent(categoryKey || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const normalizedBrand = decodeURIComponent(brandQuery || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
   CATALOG_CONFIG.filteredProducts = allProducts.filter(product => {
     // 1. Category Matching
     let matchesCategory = true;
     if (normalizedCategory && normalizedCategory !== 'all') {
-      const prodCat = (product.category || '').toLowerCase().replace(/\s+/g, '');
-      matchesCategory = prodCat.includes(normalizedCategory);
+      const prodCat = (product.category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      matchesCategory = prodCat.includes(normalizedCategory) || normalizedCategory.includes(prodCat);
     }
 
     // 2. Brand Parameter Matching
     let matchesBrand = true;
     if (normalizedBrand) {
-      const prodBrand = (product.brand || '').toLowerCase().trim();
-      matchesBrand = prodBrand.includes(normalizedBrand);
+      const prodBrand = (product.brand || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      matchesBrand = prodBrand.includes(normalizedBrand) || normalizedBrand.includes(prodBrand);
     }
 
     // 3. Search Term Matching (Title, Brand, Category, SKU/ID)
