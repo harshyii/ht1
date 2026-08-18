@@ -54,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
   applyCatalogFilters(selectedCat, searchQuery, selectedBrand);
 });
 
+/**
+ * Reads UI inputs or URL params to filter products by category, brand, and search keyword
+ */
 function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
   const allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
   if (!Array.isArray(allProducts)) return;
@@ -115,6 +118,9 @@ function applyCatalogFilters(overrideCat, overrideSearch, overrideBrand) {
   renderCatalogPage(1, false);
 }
 
+/**
+ * Dynamically updates URL query parameters to reflect active filters
+ */
 function updateUrlParams(category, query, brand) {
   const url = new URL(window.location.href);
   
@@ -141,6 +147,9 @@ function updateUrlParams(category, query, brand) {
   window.history.replaceState({}, '', url.toString());
 }
 
+/**
+ * Updates UI filter status indicators and badges safely
+ */
 function updateFilterBadges(category, query, brand) {
   const container = document.getElementById('active-filters');
   const badge = document.getElementById('filter-badge');
@@ -161,7 +170,7 @@ function updateFilterBadges(category, query, brand) {
   if (labels.length > 0) {
     badge.innerHTML = `
       ${escapeHtml(labels.join(' | '))}
-      <button onclick="resetCatalogFilters()" class="hover:text-red-600 font-bold ml-2 cursor-pointer">×</button>
+      <button onclick="resetCatalogFilters()" class="hover:text-red-600 font-bold ml-2 cursor-pointer" aria-label="Clear filters">×</button>
     `;
     container.classList.remove('hidden');
   } else {
@@ -169,6 +178,9 @@ function updateFilterBadges(category, query, brand) {
   }
 }
 
+/**
+ * Clears active search, category, and brand filters
+ */
 function resetCatalogFilters() {
   const categorySelect = document.getElementById('category-select');
   const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
@@ -177,124 +189,6 @@ function resetCatalogFilters() {
   if (searchInput) searchInput.value = '';
 
   applyCatalogFilters('all', '', '');
-}
-
-/**
- * Reads UI inputs or URL params to filter products by category and search keyword
- */
-function applyCatalogFilters(overrideCat, overrideSearch) {
-  const allProducts = window.ALL_PRODUCTS || (typeof ALL_PRODUCTS !== 'undefined' ? ALL_PRODUCTS : []);
-  if (!Array.isArray(allProducts)) return;
-
-  // Resolve active category filter
-  const categorySelect = document.getElementById('category-select');
-  const categoryKey = overrideCat !== undefined 
-    ? overrideCat 
-    : (categorySelect ? categorySelect.value : new URLSearchParams(window.location.search).get('cat') || 'all');
-
-  // Resolve active search text query
-  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
-  const searchQuery = overrideSearch !== undefined 
-    ? overrideSearch 
-    : (searchInput ? searchInput.value : new URLSearchParams(window.location.search).get('q') || '');
-
-  const normalizedSearch = searchQuery.toLowerCase().trim();
-  const normalizedCategory = (categoryKey || '').toLowerCase().replace(/\s+/g, '');
-
-  CATALOG_CONFIG.filteredProducts = allProducts.filter(product => {
-    // 1. Category Matching
-    let matchesCategory = true;
-    if (normalizedCategory && normalizedCategory !== 'all') {
-      const prodCat = (product.category || '').toLowerCase().replace(/\s+/g, '');
-      matchesCategory = prodCat.includes(normalizedCategory);
-    }
-
-    // 2. Search Term Matching (Title, Brand, Category, SKU/ID)
-    let matchesSearch = true;
-    if (normalizedSearch) {
-      const titleMatch = (product.title || '').toLowerCase().includes(normalizedSearch);
-      const brandMatch = (product.brand || '').toLowerCase().includes(normalizedSearch);
-      const catMatch = (product.category || '').toLowerCase().includes(normalizedSearch);
-      const skuMatch = String(product.id || product.asin || '').toLowerCase().includes(normalizedSearch);
-
-      matchesSearch = titleMatch || brandMatch || catMatch || skuMatch;
-    }
-
-    return matchesCategory && matchesSearch;
-  });
-
-  // Update URL parameters without reloading page
-  updateUrlParams(categoryKey, searchQuery);
-
-  // Update active filter badge indicator
-  updateFilterBadges(categoryKey, searchQuery);
-
-  // Reset to page 1 and render grid
-  renderCatalogPage(1, false);
-}
-
-/**
- * Dynamically updates URL query parameters to reflect active filters
- */
-function updateUrlParams(category, query) {
-  const url = new URL(window.location.href);
-  
-  if (category && category.toLowerCase() !== 'all') {
-    url.searchParams.set('cat', category);
-  } else {
-    url.searchParams.delete('cat');
-    url.searchParams.delete('category');
-  }
-
-  if (query && query.trim() !== '') {
-    url.searchParams.set('q', query.trim());
-  } else {
-    url.searchParams.delete('q');
-    url.searchParams.delete('search');
-  }
-
-  window.history.replaceState({}, '', url.toString());
-}
-
-/**
- * Updates UI filter status indicators and badges
- */
-function updateFilterBadges(category, query) {
-  const container = document.getElementById('active-filters');
-  const badge = document.getElementById('filter-badge');
-
-  if (!container || !badge) return;
-
-  const labels = [];
-  if (category && category.toLowerCase() !== 'all') {
-    labels.push(`Category: ${category}`);
-  }
-  if (query && query.trim() !== '') {
-    labels.push(`Search: "${query.trim()}"`);
-  }
-
-  if (labels.length > 0) {
-    badge.innerHTML = `
-      ${escapeHtml(labels.join(' | '))}
-      <button onclick="resetCatalogFilters()" class="hover:text-red-600 font-bold ml-2 cursor-pointer">×</button>
-    `;
-    container.classList.remove('hidden');
-  } else {
-    container.classList.add('hidden');
-  }
-}
-
-/**
- * Clears current search and category filters
- */
-function resetCatalogFilters() {
-  const categorySelect = document.getElementById('category-select');
-  const searchInput = document.getElementById('catalog-search-input') || document.getElementById('search-input');
-
-  if (categorySelect) categorySelect.value = 'all';
-  if (searchInput) searchInput.value = '';
-
-  applyCatalogFilters('all', '');
 }
 
 /**
@@ -356,13 +250,21 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
   let gridCardsHtml = '';
   paginatedProducts.forEach((p, index) => {
     const mainImg = (Array.isArray(p.images) && p.images[0]) || p.featuredImage || p.thumbnail || 'https://via.placeholder.com/300';
-    const detailUrl = `product.html?id=${encodeURIComponent(p.id || p.asin)}`;
+    const detailUrl = `product.html?id=${encodeURIComponent(p.id || p.asin || '')}`;
+
+    const formattedPrice = typeof p.currentPrice === 'number' 
+      ? '₹' + p.currentPrice.toLocaleString() 
+      : 'Price on Request';
+
+    const formattedMrp = typeof p.mrp === 'number' && p.mrp > p.currentPrice 
+      ? `<span class="text-xs text-gray-400 line-through ml-1">₹${p.mrp.toLocaleString()}</span>` 
+      : '';
 
     // Product Card Markup
     gridCardsHtml += `
       <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
         <a href="${detailUrl}" class="block group p-4 bg-gray-50 flex items-center justify-center h-48 overflow-hidden relative">
-          <img src="${mainImg}" alt="${escapeHtml(p.title)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300" />
+          <img src="${escapeHtml(mainImg)}" alt="${escapeHtml(p.title)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300" />
         </a>
         <div class="p-4 flex-grow flex flex-col justify-between">
           <div>
@@ -374,8 +276,8 @@ function renderCatalogPage(page = 1, scrollToTop = true) {
 
           <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
             <div>
-              <span class="text-base font-extrabold text-gray-900">${p.currentPrice ? '₹' + p.currentPrice.toLocaleString() : 'Price on Request'}</span>
-              ${p.mrp && p.mrp > p.currentPrice ? `<span class="text-xs text-gray-400 line-through ml-1">₹${p.mrp.toLocaleString()}</span>` : ''}
+              <span class="text-base font-extrabold text-gray-900">${formattedPrice}</span>
+              ${formattedMrp}
             </div>
             <a href="${detailUrl}" class="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-semibold hover:bg-blue-600 transition flex items-center gap-1">
               View <i class="fa-solid fa-arrow-right text-[10px]"></i>
