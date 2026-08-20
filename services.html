@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Services | JK Enterprises - Haryana Tools</title>
+  
+  <!-- CSS Frameworks & Icons -->
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link href="./css/output.css" rel="stylesheet">
+   <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link href="./css/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    .hero-gradient {
+      background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    }
+    .hover-lift {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    }
+    .icon-box-lg {
+      width: 70px;
+      height: 70px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .border-warning-custom {
+      border-top: 4px solid #ffc107 !important;
+    }
+  </style>
+</head>
+<body class="bg-light min-h-screen flex flex-col font-sans">
+
+  <!-- Header -->
+  <header class="bg-dark text-white sticky-top shadow-sm py-2">
+    <div class="container-fluid max-w-7xl px-3">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        
+        <!-- Brand Logo -->
+        <a href="/" class="text-warning fw-bold fs-5 text-decoration-none text-nowrap">
+          <i class="fa-solid fa-screwdriver-wrench me-1"></i> Haryana Tools
+        </a>
+
+        <!-- Header Search Form -->
+        <form action="/catalog.html" method="GET" class="flex-grow-1 mx-md-4 my-1 my-md-0" style="max-width: 480px;">
+          <div class="input-group input-group-sm">
+            <input type="text" name="q" class="form-bg-white form-control border-secondary" placeholder="Search tools, brands, or categories..." aria-label="Search Catalog" required>
+            <button class="btn btn-warning font-weight-bold" type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Navigation Links -->
+        <nav class="d-flex align-items-center gap-2 gap-sm-3">
+          <a href="/" class="text-light text-decoration-none small">Home</a>
+          <a href="/catalog.html" class="text-light text-decoration-none small">Catalog</a>
+          <a href="/blogs.html" class="text-light text-decoration-none small">Blogs</a>
+          <a href="/about.html" class="text-light text-decoration-none small">About Us</a>
+          <a href="/contact.html" class="text-light text-decoration-none small">Contact Us</a>
+          <a href="/cart.html" class="btn btn-warning btn-sm fw-bold d-inline-flex align-items-center gap-1 py-1 px-2">
+            <span>🛒</span>
+            <span class="badge bg-dark text-white rounded-circle ms-1" id="cart-badge-count">0</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow-1 container max-w-7xl mx-auto px-3 py-4">
+    
+    <!-- Hero Banner -->
+    <div class="hero-gradient text-white p-4 p-md-5 rounded-4 shadow-sm mb-5 text-center position-relative overflow-hidden">
+      <div class="max-w-3xl mx-auto">
+        <span class="badge bg-warning text-dark fw-bold text-uppercase px-3 py-2 rounded-pill mb-3">
+          Comprehensive Local Solutions
+        </span>
+        <h1 class="display-5 fw-extrabold text-white my-2">Our Core Services & Solutions</h1>
+        <p class="text-light opacity-75 fs-6 mb-0">
+          From heavy-duty industrial machinery sales to turn-key rooftop solar installations and expert income tax return filing, JK Enterprises provides trusted local expertise across Pehowa, Kaithal, and Karnal.
+        </p>
+      </div>
+    </div>
+
+    <!-- Detailed Services Breakdown -->
+    <div class="row g-4 mb-5">
+      
+      <!-- Service 1: Power Tools & Equipment -->
+      <div class="col-12 col-lg-4">
+        <div class="bg-white border rounded-4 p-4 shadow-sm h-100 d-flex flex-column justify-content-between hover-lift border-warning-custom">
+          <div>
+            <div class="icon-box-lg bg-warning bg-opacity-10 rounded-3 text-warning fs-2 mb-3">
+              <i class="fa-solid fa-gears"></i>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">Power Tools & Hardware Supply</h3>
+            <p class="small text-muted mb-4">
+              We supply original industrial tools, workshop machinery, and heavy equipment with full manufacturer warranties and after-sales support.
+            </p>
+            
+            <h6 class="fw-bold text-dark text-uppercase small tracking-wider mb-2">Key Offerings:</h6>
+            <ul class="list-unstyled space-y-2 text-muted small mb-4">
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Grinders, Rotary Hammers & Impact Drills</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> High-Pressure Car Washers & Compressors</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Marble Cutters & Demolition Hammers</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Wholesale Bulk Pricing for Contractors</li>
+            </ul>
+          </div>
+
+          <div class="pt-3 border-top">
+            <a href="/catalog.html?cat=powertools" class="btn btn-warning text-dark fw-bold w-100 py-2">
+              Browse Tools Catalog <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service 2: Solar Energy Solutions -->
+      <div class="col-12 col-lg-4">
+        <div class="bg-white border rounded-4 p-4 shadow-sm h-100 d-flex flex-column justify-content-between hover-lift border-warning-custom">
+          <div>
+            <div class="icon-box-lg bg-warning bg-opacity-10 rounded-3 text-warning fs-2 mb-3">
+              <i class="fa-solid fa-solar-panel"></i>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">On-Grid Solar Plant Installation</h3>
+            <p class="small text-muted mb-4">
+              Lower your monthly electricity bills with complete rooftop solar power systems customized for homes, farms, and commercial buildings.
+            </p>
+            
+            <h6 class="fw-bold text-dark text-uppercase small tracking-wider mb-2">Key Offerings:</h6>
+            <ul class="list-unstyled space-y-2 text-muted small mb-4">
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> On-Site Structure & Roof Feasibility Survey</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Bi-Directional Net Metering Approvals</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Tier-1 Solar Panels & Grid-Tie Inverters</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Government Subsidy Guidance & Filing</li>
+            </ul>
+          </div>
+
+          <div class="pt-3 border-top">
+            <a href="https://wa.me/919050623210?text=Hello,%20I%20want%20a%20solar%20site%20survey%20quotation." target="_blank" class="btn btn-dark text-white fw-bold w-100 py-2">
+              Request Solar Quote <i class="fa-brands fa-whatsapp ms-1 text-success"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service 3: ITR & Tax Consultancy -->
+      <div class="col-12 col-lg-4">
+        <div class="bg-white border rounded-4 p-4 shadow-sm h-100 d-flex flex-column justify-content-between hover-lift border-warning-custom">
+          <div>
+            <div class="icon-box-lg bg-warning bg-opacity-10 rounded-3 text-warning fs-2 mb-3">
+              <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">ITR Filing & Tax Compliance</h3>
+            <p class="small text-muted mb-4">
+              Professional tax filing solutions to keep your business or personal finances fully compliant with the latest Income Tax guidelines.
+            </p>
+            
+            <h6 class="fw-bold text-dark text-uppercase small tracking-wider mb-2">Key Offerings:</h6>
+            <ul class="list-unstyled space-y-2 text-muted small mb-4">
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Salaried & Business Income Tax Filing</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> AIS / TIS Data Reconciliation</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> GST Registration & Monthly Returns</li>
+              <li class="mb-1"><i class="fa-solid fa-check text-warning me-2"></i> Financial Consultation for Local Businesses</li>
+            </ul>
+          </div>
+
+          <div class="pt-3 border-top">
+            <a href="/contact.html" class="btn btn-warning text-dark fw-bold w-100 py-2">
+              Consult Tax Specialist <i class="fa-solid fa-user-check ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- How We Work Process Section -->
+    <div class="bg-white border rounded-4 p-4 p-md-5 shadow-sm mb-5">
+      <div class="text-center max-w-2xl mx-auto mb-4">
+        <h3 class="fw-bold text-dark">Simple 4-Step Working Process</h3>
+        <p class="small text-muted mb-0">How we deliver hassle-free services for equipment, solar, and taxation.</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-3">
+          <div class="p-3 bg-light rounded-3 text-center h-100">
+            <span class="badge bg-warning text-dark fw-bold rounded-circle fs-5 mb-2 px-3 py-2">1</span>
+            <h6 class="fw-bold text-dark">Requirement Check</h6>
+            <p class="small text-muted mb-0">Share your tool list, power load requirements, or financial documents.</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-3 bg-light rounded-3 text-center h-100">
+            <span class="badge bg-warning text-dark fw-bold rounded-circle fs-5 mb-2 px-3 py-2">2</span>
+            <h6 class="fw-bold text-dark">Upfront Quotation</h6>
+            <p class="small text-muted mb-0">Receive clear, transparent pricing with no hidden charges or extra fees.</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-3 bg-light rounded-3 text-center h-100">
+            <span class="badge bg-warning text-dark fw-bold rounded-circle fs-5 mb-2 px-3 py-2">3</span>
+            <h6 class="fw-bold text-dark">Execution & Delivery</h6>
+            <p class="small text-muted mb-0">Fast dispatch of tools, on-site solar setup, or online tax filing.</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-3 bg-light rounded-3 text-center h-100">
+            <span class="badge bg-warning text-dark fw-bold rounded-circle fs-5 mb-2 px-3 py-2">4</span>
+            <h6 class="fw-bold text-dark">Ongoing Support</h6>
+            <p class="small text-muted mb-0">Dedicated local warranty support and ongoing consultancy whenever needed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Call to Action Banner -->
+    <div class="bg-dark text-white rounded-4 p-4 p-md-5 shadow-sm text-center">
+      <h3 class="fw-bold text-warning mb-2">Have a Custom Project or Bulk Requirement?</h3>
+      <p class="small text-light opacity-75 max-w-xl mx-auto mb-4">
+        Connect directly with our store team in Pehowa for bulk hardware orders, site surveys, or financial assistance.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="https://wa.me/919050623210" target="_blank" class="btn btn-warning text-dark fw-bold px-4 py-2">
+          <i class="fa-brands fa-whatsapp me-1"></i> Chat on WhatsApp
+        </a>
+        <a href="/contact.html" class="btn btn-outline-light fw-bold px-4 py-2">Fill Contact Form</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 mt-20 border-t border-gray-800 text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Brand Info -->
+      <div class="space-y-3">
+        <a href="/" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
+        <p class="text-xs text-gray-400 leading-relaxed">
+          Your trusted partner for industrial tools, power machinery, tax solutions, and on-grid solar power systems in Pehowa and beyond.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Quick Links</h3>
+        <ul class="space-y-2 text-xs">
+          <li><a href="/" class="hover:text-yellow-400 transition">Home</a></li>
+          <li><a href="/catalog.html" class="hover:text-yellow-400 transition">Product Catalog</a></li>
+          <li><a href="/blogs.html" class="hover:text-yellow-400 transition">Knowledge Hub / Blogs</a></li>
+          <li><a href="/contact.html" class="hover:text-yellow-400 transition">Contact Us</a></li>
+          <li><a href="/cart.html" class="hover:text-yellow-400 transition">Cart & Checkout</a></li>
+        </ul>
+      </div>
+
+      <!-- Solutions -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Solutions</h3>
+        <ul class="space-y-2 text-xs">
+          <li><a href="/catalog.html?cat=powertools" class="hover:text-yellow-400 transition">Power Tools</a></li>
+          <li><a href="/catalog.html?cat=solar" class="hover:text-yellow-400 transition">On-Grid Solar Systems</a></li>
+          <li><a href="/catalog.html?cat=handtools" class="hover:text-yellow-400 transition">Hand Tools & Equipment</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Contact Us</h3>
+        <p class="text-xs text-gray-400 mb-1">📍 Pehowa, Haryana, India</p>
+        <p class="text-xs text-gray-400 mb-1">📞 Sales & Support: +91 9050623210</p>
+        <p class="text-xs text-gray-400">✉️ support@haryana.tools</p>
+      </div>
+
+    </div>
+
+    <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
+      © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script src="./js/app.js"></script>
+  <script src="./js/router.js"></script>
+</body>
+</html>

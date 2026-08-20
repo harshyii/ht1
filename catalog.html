@@ -8,7 +8,7 @@
   
   <!-- CSS Frameworks & Icons -->
    <link rel="stylesheet" href="./css/bootstrap.min.css">
-  <link href="/css/output.css" rel="stylesheet">
+  <link href="./css/output.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col font-sans">
@@ -83,51 +83,70 @@
     </div>
   </main>
   
-    <!-- Dynamic Footer Injection -->
-  <footer class="bg-gray-900 text-gray-400 mt-20 border-t border-gray-800 text-sm">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
-    
-    <!-- Brand Info -->
-    <div class="space-y-3">
-      <a href="/public/index.html" class="text-2xl font-black text-yellow-400 tracking-tight">JK Enterprises</a>
-      <p class="text-xs text-gray-400 leading-relaxed">
-        Your trusted partner for industrial tools, power machinery, and on-grid solar power systems in Pehowa and beyond.
-      </p>
+    <!-- Footer Component (Matches Header Styling) -->
+<footer class="bg-dark text-white mt-5 pt-5 pb-3 border-top border-secondary text-sm">
+  <div class="container-fluid max-w-7xl px-3">
+    <div class="row g-4">
+      
+      <!-- Brand Info -->
+      <div class="col-12 col-md-4 col-lg-3">
+        <a href="/" class="text-warning fw-bold fs-5 text-decoration-none d-block mb-2">
+          Haryana Tools
+        </a>
+        <p class="text-secondary small mb-0">
+          Your trusted partner for industrial tools, power machinery, and on-grid solar power systems in Pehowa and beyond.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-6 col-md-2">
+        <h6 class="text-white font-weight-bold text-uppercase small mb-3">Quick Links</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+          <li><a href="/" class="text-secondary text-decoration-none hover-warning">Home</a></li>
+          <li><a href="/catalog.html" class="text-secondary text-decoration-none hover-warning">Product Catalog</a></li>
+          <li><a href="/blogs.html" class="text-secondary text-decoration-none hover-warning">Knowledge Hub / Blogs</a></li>
+          <li><a href="/cart.html" class="text-secondary text-decoration-none hover-warning">Cart & Checkout</a></li>
+        </ul>
+      </div>
+
+      <!-- Solutions -->
+      <div class="col-6 col-md-2">
+        <h6 class="text-white font-weight-bold text-uppercase small mb-3">Solutions</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+          <li><a href="/catalog.html?cat=powertools" class="text-secondary text-decoration-none hover-warning">Power Tools</a></li>
+          <li><a href="/catalog.html?cat=solar" class="text-secondary text-decoration-none hover-warning">On-Grid Solar Systems</a></li>
+          <li><a href="/catalog.html?cat=handtools" class="text-secondary text-decoration-none hover-warning">Hand Tools & Equipment</a></li>
+        </ul>
+      </div>
+
+      <!-- Delivery Network -->
+      <div class="col-6 col-md-2">
+        <h6 class="text-white font-weight-bold text-uppercase small mb-3">Delivery Network</h6>
+        <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+          <li>
+            <a href="/delivery/main.html" class="text-warning fw-bold text-decoration-none">
+              🚚 Delivery Express Hub
+            </a>
+          </li>
+          <li><a href="/delivery/Pehowa.html" class="text-secondary text-decoration-none hover-warning">Pehowa Hub</a></li>
+          <li><a href="/delivery/Rohtak.html" class="text-secondary text-decoration-none hover-warning">Rohtak Hub</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-12 col-md-2">
+        <h6 class="text-white font-weight-bold text-uppercase small mb-3">Contact Us</h6>
+        <p class="text-secondary small mb-1">📍 Pehowa, Haryana, India</p>
+        <p class="text-secondary small mb-1">📞 Sales & Support: +91 9050623210</p>
+        <p class="text-secondary small mb-0">✉️ support@haryana.tools</p>
+      </div>
+
     </div>
 
-    <!-- Quick Links -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Quick Links</h3>
-      <ul class="space-y-2 text-xs">
-        <li><a href="/index.html" class="hover:text-yellow-400 transition">Home</a></li>
-        <li><a href="/catalog.html" class="hover:text-yellow-400 transition">Product Catalog</a></li>
-        <li><a href="/blogs.html" class="hover:text-yellow-400 transition">Knowledge Hub / Blogs</a></li>
-        <li><a href="/cart.html" class="hover:text-yellow-400 transition">Cart & Checkout</a></li>
-      </ul>
+    <!-- Bottom Line -->
+    <div class="border-top border-secondary mt-4 pt-3 text-center text-secondary small">
+      © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
     </div>
-
-    <!-- Categories -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Solutions</h3>
-      <ul class="space-y-2 text-xs">
-        <li><a href="/catalog.html?cat=powertools" class="hover:text-yellow-400 transition">Power Tools</a></li>
-        <li><a href="/catalog.html?cat=solar" class="hover:text-yellow-400 transition">On-Grid Solar Systems</a></li>
-        <li><a href="/catalog.html?cat=handtools" class="hover:text-yellow-400 transition">Hand Tools & Equipment</a></li>
-      </ul>
-    </div>
-
-    <!-- Contact Info -->
-    <div>
-      <h3 class="text-white font-bold mb-3 text-xs uppercase tracking-wider">Contact Us</h3>
-      <p class="text-xs text-gray-400 mb-1">📍 Pehowa, Haryana, India</p>
-      <p class="text-xs text-gray-400 mb-1">📞 Sales & Support: +91 9050623210</p>
-      <p class="text-xs text-gray-400">✉️ support@haryana.tools</p>
-    </div>
-
-  </div>
-
-  <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
-    © 2026 Haryana Tools by JK Enterprises. All Rights Reserved.
   </div>
 </footer>
 
