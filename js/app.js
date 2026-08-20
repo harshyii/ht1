@@ -38,6 +38,9 @@ const App = {
   // -------------------------------------------------------------
   // PARTIAL COMPONENTS INJECTION
   // -------------------------------------------------------------
+  // -------------------------------------------------------------
+  // PARTIAL COMPONENTS INJECTION (FIXED)
+  // -------------------------------------------------------------
   async injectHeadComponent() {
     const headTarget = document.getElementById('head-component');
     if (!headTarget) return;
@@ -52,6 +55,13 @@ const App = {
       
       Array.from(tempDiv.childNodes).forEach(node => {
         if (node.tagName === 'SCRIPT') {
+          // PREVENT INFINITE LOOP: Do not re-inject app.js if it is already loaded
+          if (node.src && node.src.includes('app.js')) return;
+
+          // Check if script is already injected in document.head
+          const exists = Array.from(document.head.scripts).some(s => s.src === node.src);
+          if (node.src && exists) return;
+
           const script = document.createElement('script');
           if (node.src) script.src = node.src;
           if (node.innerHTML) script.innerHTML = node.innerHTML;
@@ -376,5 +386,9 @@ addToCart(product, quantity = 1) {
   }
 };
 
-
-App.init();
+// Safely run App.init only once after DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => App.init());
+} else {
+  App.init();
+}
