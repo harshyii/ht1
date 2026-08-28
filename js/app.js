@@ -6,10 +6,8 @@
 const App = {
   CART_KEY: 'jk_cart',
   COUPON_KEY: 'jke_applied_coupon',
+  initialized: false, // PREVENTS RE-ENTRY / INFINITE LOOPS
 
-  /**
-   * Escape HTML utility to prevent XSS vulnerabilities
-   */
   escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -21,25 +19,30 @@ const App = {
   },
 
   async init() {
+    // PREVENT INFINITE LOOP: Force exit if App.init() has already run
+    if (this.initialized) return;
+    this.initialized = true;
+
     await this.injectHeadComponent();
     await this.renderHeader();
     
     // Render Sitewide Top Announcement Bar Ad Placement
-    if (typeof AdManager !== 'undefined') {
-      await AdManager.renderTopBar('top-announcement-bar');
+    if (typeof AdManager !== 'undefined' && typeof AdManager.renderTopBar === 'function') {
+      try {
+        await AdManager.renderTopBar('top-announcement-bar');
+      } catch (e) {
+        console.warn('AdManager render failed:', e);
+      }
     }
 
     await this.renderFooter();
-    await this.renderHomeBlogsSection(); // Renders latest blogs on index/home page
+    await this.renderHomeBlogsSection();
     this.updateCartBadge();
     this.bindGlobalEvents();
   },
 
   // -------------------------------------------------------------
-  // PARTIAL COMPONENTS INJECTION
-  // -------------------------------------------------------------
-  // -------------------------------------------------------------
-  // PARTIAL COMPONENTS INJECTION (FIXED)
+  // PARTIAL COMPONENTS INJECTION (SAFE FROM EXECUTING INNER SCRIPTS)
   // -------------------------------------------------------------
   async injectHeadComponent() {
     const headTarget = document.getElementById('head-component');
@@ -54,22 +57,10 @@ const App = {
       tempDiv.innerHTML = html;
       
       Array.from(tempDiv.childNodes).forEach(node => {
-        if (node.tagName === 'SCRIPT') {
-          // PREVENT INFINITE LOOP: Do not re-inject app.js if it is already loaded
-          if (node.src && node.src.includes('app.js')) return;
+        // IGNORE SCRIPT TAGS completely inside head.html to stop recursion loops
+        if (node.tagName === 'SCRIPT') return;
 
-          // Check if script is already injected in document.head
-          const exists = Array.from(document.head.scripts).some(s => s.src === node.src);
-          if (node.src && exists) return;
-
-          const script = document.createElement('script');
-          if (node.src) script.src = node.src;
-          if (node.innerHTML) script.innerHTML = node.innerHTML;
-          if (node.type) script.type = node.type;
-          if (node.async) script.async = true;
-          if (node.defer) script.defer = true;
-          document.head.appendChild(script);
-        } else if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
+        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
           document.head.appendChild(node.cloneNode(true));
         }
       });
@@ -85,7 +76,9 @@ const App = {
     try {
       const res = await fetch('./components/header.html');
       if (res.ok) {
-        headerElem.innerHTML = await res.text();
+        const rawHtml = await res.text();
+        // Remove nested scripts in component html to prevent loop execution
+        headerElem.innerHTML = rawHtml.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
         this.updateCartBadge();
         return;
       }
@@ -93,7 +86,7 @@ const App = {
       console.warn('Fetching header.html failed, using fallback template.', e);
     }
 
-    // Fallback Header Template (Includes top announcement container)
+    // Fallback Header Template
     headerElem.innerHTML = `
       <div id="top-announcement-bar"></div>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm" aria-label="Main navigation">
@@ -138,7 +131,9 @@ const App = {
     try {
       const res = await fetch('./components/footer.html');
       if (res.ok) {
-        footerElem.innerHTML = await res.text();
+        const rawHtml = await res.text();
+        // Remove nested scripts in component html to prevent loop execution
+        footerElem.innerHTML = rawHtml.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
         return;
       }
     } catch (e) {
@@ -147,7 +142,6 @@ const App = {
 
     const currentYear = new Date().getFullYear();
 
-    // Fallback Footer Template
     footerElem.innerHTML = `
       <footer class="bg-dark text-light pt-5 pb-3 mt-5 border-top border-secondary">
         <div class="container">
@@ -194,7 +188,6 @@ const App = {
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const blogs = await res.json();
 
-      // Take the 3 most recent blogs
       const latestBlogs = Array.isArray(blogs) ? blogs.slice(0, 3) : [];
 
       if (latestBlogs.length === 0) {
@@ -275,36 +268,33 @@ const App = {
     }
   },
 
-  // Inside app.js -> addToCart(product, quantity = 1)
+  addToCart(product, quantity = 1) {
+    const cart = this.getCart();
+    const productId = String(product.id || product.asin);
+    const existingIndex = cart.findIndex(item => String(item.id) === productId || String(item.asin) === productId);
 
-addToCart(product, quantity = 1) {
-  const cart = this.getCart();
-  const productId = String(product.id || product.asin);
-  const existingIndex = cart.findIndex(item => String(item.id) === productId || String(item.asin) === productId);
+    const itemPrice = parseFloat(product.price || product.currentPrice) || 0;
+    const itemImage = product.image || product.thumbnail || product.featuredImage || '';
 
-  // Read price and image regardless of key formats
-  const itemPrice = parseFloat(product.price || product.currentPrice) || 0;
-  const itemImage = product.image || product.thumbnail || product.featuredImage || '';
+    if (existingIndex > -1) {
+      cart[existingIndex].quantity += quantity;
+    } else {
+      cart.push({
+        id: productId,
+        asin: product.asin || '',
+        title: product.title || 'Product Item',
+        brand: product.brand || '',
+        price: itemPrice,
+        currentPrice: itemPrice,
+        image: itemImage,
+        thumbnail: itemImage,
+        quantity: quantity
+      });
+    }
 
-  if (existingIndex > -1) {
-    cart[existingIndex].quantity += quantity;
-  } else {
-    cart.push({
-      id: productId,
-      asin: product.asin || '',
-      title: product.title || 'Product Item',
-      brand: product.brand || '',
-      price: itemPrice,             // Saves as 'price' for cart-renderer.js
-      currentPrice: itemPrice,      // Keeps 'currentPrice' for backwards compatibility
-      image: itemImage,             // Saves as 'image' for cart-renderer.js
-      thumbnail: itemImage,         // Keeps 'thumbnail' for backwards compatibility
-      quantity: quantity
-    });
-  }
-
-  this.saveCart(cart);
-  this.showToast(`Added "${product.title}" to cart!`);
-},
+    this.saveCart(cart);
+    this.showToast(`Added "${product.title}" to cart!`);
+  },
 
   removeFromCart(productId) {
     let cart = this.getCart();
@@ -386,7 +376,7 @@ addToCart(product, quantity = 1) {
   }
 };
 
-// Safely run App.init only once after DOM is ready
+// Safe Single Boot
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => App.init());
 } else {
