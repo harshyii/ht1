@@ -24,6 +24,14 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <url>
+    <loc>https://www.haryana.tools/festival-season-tools-sales.html</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://www.haryana.tools/blogs/how-to-choose-angle-grinder.html</loc>
     <lastmod>2026-05-01</lastmod>
